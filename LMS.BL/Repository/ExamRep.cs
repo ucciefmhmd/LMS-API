@@ -35,7 +35,7 @@ namespace LMS.BL.Repository
             return db.Exam.Select(a => a);
         }
 
-        public Exam GetDyId(int id)
+        public Exam GetById(int id)
         {
             return db.Exam.Find(id);
         }

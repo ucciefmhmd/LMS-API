@@ -19,6 +19,8 @@ namespace LMS.DAL.Entity
         public int Course_ID { get; set; }
         public virtual Courses Courses { get; set; }
         public ICollection<Questions> Questions { get; } = new HashSet<Questions>();
+        public ICollection<StudentExam> StudentExam { get; } = new HashSet<StudentExam>();
+
 
     }
 }

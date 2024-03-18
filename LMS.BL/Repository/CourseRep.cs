@@ -35,12 +35,12 @@ namespace LMS.BL.Repository
             return db.Courses.Select(a => a);
         }
 
-        public Courses GetDyId(int id)
+        public Courses GetById(int id)
         {
             return db.Courses.Find(id);
         }
 
-        public Courses GetDyName(string name)
+        public Courses GetByName(string name)
         {
             return db.Courses.FirstOrDefault(a => a.Name == name);
         }

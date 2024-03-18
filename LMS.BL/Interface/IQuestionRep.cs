@@ -10,7 +10,7 @@ namespace LMS.BL.Interface
     public interface IQuestionRep
     {
         IEnumerable<Questions> GetAllData();
-        Questions GetDyId(int id);
+        Questions GetById(int id);
         void Add(Questions ques);
         void Update(Questions ques);
         void Delete(Questions ques);

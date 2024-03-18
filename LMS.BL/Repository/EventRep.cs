@@ -35,7 +35,7 @@ namespace LMS.BL.Repository
             return db.Events.Select(a => a);
         }
 
-        public Events GetDyId(int id)
+        public Events GetById(int id)
         {
             return db.Events.Find(id);
         }

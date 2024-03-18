@@ -10,8 +10,8 @@ namespace LMS.BL.Interface
     public interface ICourseRep
     {
         IEnumerable<Courses> GetAllData();
-        Courses GetDyId(int id);
-        Courses GetDyName(string name);
+        Courses GetById(int id);
+        Courses GetByName(string name);
         void Add(Courses crs);
         void Update(Courses crs);
         void Delete(Courses crs);

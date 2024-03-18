@@ -33,17 +33,17 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Students> GetAllData()
         {
-            return db.Students.Include(a => a.Group).Select(a => a);
+            return db.Students.Include(a => a).Select(a => a);
         }
 
-        public Students GetDyId(int id)
+        public Students GetById(int id)
         {
             return db.Students.Find(id);
         }
 
-        public Students GetDyName(string name)
+        public Students GetByName(string name)
         {
-            return db.Students.FirstOrDefault(a=>a.Name == name);
+            return db.Students.FirstOrDefault(a=>a.Users.Name == name);
         }
 
         public void Update(Students std)

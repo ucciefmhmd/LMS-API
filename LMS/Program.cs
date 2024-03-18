@@ -1,4 +1,6 @@
 
+using LMS.BL.Interface;
+using LMS.BL.Repository;
 using LMS.DAL.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +15,15 @@ namespace LMS
             // DataBase
             builder.Services.AddDbContext<LMSContext>(a =>
                 a.UseSqlServer(builder.Configuration.GetConnectionString("con")));
+
+            // Dependency Injection
+            builder.Services.AddScoped<IStudentRep , StudentRep>();
+            builder.Services.AddScoped<IInstructorRep , InstructorRep>();
+            builder.Services.AddScoped<ICourseRep , CourseRep>();
+            builder.Services.AddScoped<IEventRep , EventRep>();
+            builder.Services.AddScoped<IExamRep , ExamRep>();
+            builder.Services.AddScoped<IQuestionRep , QuestionRep>();
+            builder.Services.AddScoped<IUserRep , UserRep>();
 
             // Add services to the container.
 

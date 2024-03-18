@@ -10,8 +10,8 @@ namespace LMS.BL.Interface
     public interface IInstructorRep
     {
         IEnumerable<Instructors> GetAllData();
-        Instructors GetDyId(int id);
-        Instructors GetDyName(string name);
+        Instructors GetById(int id);
+        Instructors GetByName(string name);
         void Add(Instructors inst);
         void Update(Instructors inst);
         void Delete(Instructors inst);

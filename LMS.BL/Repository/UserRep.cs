@@ -35,12 +35,12 @@ namespace LMS.BL.Repository
             return db.Users.Select(a => a);
         }
 
-        public Users GetDyId(int id)
+        public Users GetById(int id)
         {
             return db.Users.Find(id);
         }
 
-        public Users GetDyName(string name)
+        public Users GetByName(string name)
         {
             return db.Users.FirstOrDefault(a => a.Name == name);
         }

@@ -10,7 +10,7 @@ namespace LMS.BL.Interface
     public interface IEventRep
     {
         IEnumerable<Events> GetAllData();
-        Events GetDyId(int id);
+        Events GetById(int id);
         void Add(Events eve);
         void Update(Events eve);
         void Delete(Events eve);

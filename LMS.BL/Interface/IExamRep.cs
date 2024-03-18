@@ -10,7 +10,7 @@ namespace LMS.BL.Interface
     public interface IExamRep
     {
         IEnumerable<Exam> GetAllData();
-        Exam GetDyId(int id);
+        Exam GetById(int id);
         void Add(Exam exam);
         void Update(Exam exam);
         void Delete(Exam exam);

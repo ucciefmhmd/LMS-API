@@ -10,8 +10,8 @@ namespace LMS.BL.Interface
     public interface IStudentRep
     {
         IEnumerable<Students> GetAllData();
-        Students GetDyId(int id);
-        Students GetDyName(string name);
+        Students GetById(int id);
+        Students GetByName(string name);
         void Add(Students std);
         void Update(Students std);
         void Delete(Students std);

@@ -17,5 +17,7 @@ namespace LMS.DAL.Entity
         [ForeignKey("Exam")]
         public int Exam_ID { get; set; }
         public virtual Exam Exam { get; set; }
+        public ICollection<StudentQuestion> StudentQuestion { get; } = new HashSet<StudentQuestion>();
+
     }
 }

@@ -35,7 +35,7 @@ namespace LMS.BL.Repository
             return db.Questions.Select(a => a);
         }
 
-        public Questions GetDyId(int id)
+        public Questions GetById(int id)
         {
             return db.Questions.Find(id);
         }

@@ -35,14 +35,14 @@ namespace LMS.BL.Repository
             return db.Instructors.Select(a => a);
         }
 
-        public Instructors GetDyId(int id)
+        public Instructors GetById(int id)
         {
             return db.Instructors.Find(id);
         }
 
-        public Instructors GetDyName(string name)
+        public Instructors GetByName(string name)
         {
-            return db.Instructors.FirstOrDefault(a => a.Name == name);
+            return db.Instructors.FirstOrDefault(a => a.Users.Name == name);
         }
 
         public void Update(Instructors inst)

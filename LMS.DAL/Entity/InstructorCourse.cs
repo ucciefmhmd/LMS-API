@@ -17,5 +17,7 @@ namespace LMS.DAL.Entity
         [ForeignKey("Courses")]
         public int Course_ID { get; set; }
         public virtual Courses Courses { get; set; }
+        public ICollection<Group> Group { get; } = new HashSet<Group>();
+
     }
 }

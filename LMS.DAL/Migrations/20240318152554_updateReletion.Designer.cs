@@ -4,6 +4,7 @@ using LMS.DAL.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.DAL.Migrations
 {
     [DbContext(typeof(LMSContext))]
-    partial class LMSContextModelSnapshot : ModelSnapshot
+    [Migration("20240318152554_updateReletion")]
+    partial class updateReletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,66 @@ namespace LMS.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CoursesInstructors", b =>
+                {
+                    b.Property<int>("CoursesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InstructorsuserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoursesId", "InstructorsuserID");
+
+                    b.HasIndex("InstructorsuserID");
+
+                    b.ToTable("CoursesInstructors");
+                });
+
+            modelBuilder.Entity("EventsUsers", b =>
+                {
+                    b.Property<int>("EventsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("EventsUsers");
+                });
+
+            modelBuilder.Entity("ExamStudents", b =>
+                {
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsuserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExamId", "StudentsuserID");
+
+                    b.HasIndex("StudentsuserID");
+
+                    b.ToTable("ExamStudents");
+                });
+
+            modelBuilder.Entity("InstructorCourseStudents", b =>
+                {
+                    b.Property<int>("InstructorCourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsuserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("InstructorCourseId", "StudentsuserID");
+
+                    b.HasIndex("StudentsuserID");
+
+                    b.ToTable("InstructorCourseStudents");
+                });
 
             modelBuilder.Entity("LMS.DAL.Entity.Courses", b =>
                 {
@@ -319,6 +382,81 @@ namespace LMS.DAL.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("QuestionsStudents", b =>
+                {
+                    b.Property<int>("QuestionsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsuserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuestionsId", "StudentsuserID");
+
+                    b.HasIndex("StudentsuserID");
+
+                    b.ToTable("QuestionsStudents");
+                });
+
+            modelBuilder.Entity("CoursesInstructors", b =>
+                {
+                    b.HasOne("LMS.DAL.Entity.Courses", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.DAL.Entity.Instructors", null)
+                        .WithMany()
+                        .HasForeignKey("InstructorsuserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EventsUsers", b =>
+                {
+                    b.HasOne("LMS.DAL.Entity.Events", null)
+                        .WithMany()
+                        .HasForeignKey("EventsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.DAL.Entity.Users", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ExamStudents", b =>
+                {
+                    b.HasOne("LMS.DAL.Entity.Exam", null)
+                        .WithMany()
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.DAL.Entity.Students", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsuserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InstructorCourseStudents", b =>
+                {
+                    b.HasOne("LMS.DAL.Entity.InstructorCourse", null)
+                        .WithMany()
+                        .HasForeignKey("InstructorCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.DAL.Entity.Students", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsuserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("LMS.DAL.Entity.Exam", b =>
                 {
                     b.HasOne("LMS.DAL.Entity.Courses", "Courses")
@@ -333,7 +471,7 @@ namespace LMS.DAL.Migrations
             modelBuilder.Entity("LMS.DAL.Entity.Group", b =>
                 {
                     b.HasOne("LMS.DAL.Entity.InstructorCourse", "InstructorCourse")
-                        .WithMany("Group")
+                        .WithMany()
                         .HasForeignKey("InstCos_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -352,13 +490,13 @@ namespace LMS.DAL.Migrations
             modelBuilder.Entity("LMS.DAL.Entity.InstructorCourse", b =>
                 {
                     b.HasOne("LMS.DAL.Entity.Courses", "Courses")
-                        .WithMany("InstructorCourse")
+                        .WithMany()
                         .HasForeignKey("Course_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LMS.DAL.Entity.Instructors", "Instructors")
-                        .WithMany("InstructorCourse")
+                        .WithMany()
                         .HasForeignKey("inst_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -393,13 +531,13 @@ namespace LMS.DAL.Migrations
             modelBuilder.Entity("LMS.DAL.Entity.StudentExam", b =>
                 {
                     b.HasOne("LMS.DAL.Entity.Exam", "Exam")
-                        .WithMany("StudentExam")
+                        .WithMany()
                         .HasForeignKey("Exam_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LMS.DAL.Entity.Students", "Students")
-                        .WithMany("StudentExam")
+                        .WithMany()
                         .HasForeignKey("Std_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -412,13 +550,13 @@ namespace LMS.DAL.Migrations
             modelBuilder.Entity("LMS.DAL.Entity.StudentQuestion", b =>
                 {
                     b.HasOne("LMS.DAL.Entity.Questions", "Questions")
-                        .WithMany("StudentQuestion")
+                        .WithMany()
                         .HasForeignKey("Ques_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LMS.DAL.Entity.Students", "Students")
-                        .WithMany("StudentQuestion")
+                        .WithMany()
                         .HasForeignKey("Std_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -442,13 +580,13 @@ namespace LMS.DAL.Migrations
             modelBuilder.Entity("LMS.DAL.Entity.UserEvent", b =>
                 {
                     b.HasOne("LMS.DAL.Entity.Events", "Events")
-                        .WithMany("UserEvent")
+                        .WithMany()
                         .HasForeignKey("event_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LMS.DAL.Entity.Users", "Users")
-                        .WithMany("UserEvent")
+                        .WithMany()
                         .HasForeignKey("user_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -458,52 +596,34 @@ namespace LMS.DAL.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("QuestionsStudents", b =>
+                {
+                    b.HasOne("LMS.DAL.Entity.Questions", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.DAL.Entity.Students", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsuserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("LMS.DAL.Entity.Courses", b =>
                 {
                     b.Navigation("Exam");
-
-                    b.Navigation("InstructorCourse");
-                });
-
-            modelBuilder.Entity("LMS.DAL.Entity.Events", b =>
-                {
-                    b.Navigation("UserEvent");
                 });
 
             modelBuilder.Entity("LMS.DAL.Entity.Exam", b =>
                 {
                     b.Navigation("Questions");
-
-                    b.Navigation("StudentExam");
-                });
-
-            modelBuilder.Entity("LMS.DAL.Entity.InstructorCourse", b =>
-                {
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("LMS.DAL.Entity.Instructors", b =>
-                {
-                    b.Navigation("InstructorCourse");
-                });
-
-            modelBuilder.Entity("LMS.DAL.Entity.Questions", b =>
-                {
-                    b.Navigation("StudentQuestion");
                 });
 
             modelBuilder.Entity("LMS.DAL.Entity.Students", b =>
                 {
                     b.Navigation("Group");
-
-                    b.Navigation("StudentExam");
-
-                    b.Navigation("StudentQuestion");
-                });
-
-            modelBuilder.Entity("LMS.DAL.Entity.Users", b =>
-                {
-                    b.Navigation("UserEvent");
                 });
 #pragma warning restore 612, 618
         }

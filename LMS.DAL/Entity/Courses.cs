@@ -17,5 +17,6 @@ namespace LMS.DAL.Entity
         public DateTime Start_Date { get; set; }
         public DateTime End_Date { get; set; }
         public ICollection<Exam> Exam { get; } = new HashSet<Exam>();
+        public ICollection<InstructorCourse> InstructorCourse { get; } = new HashSet<InstructorCourse>();
     }
 }
