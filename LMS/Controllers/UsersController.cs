@@ -22,7 +22,7 @@ namespace LMS.Controllers
             {
                 Issuer = jwtOptions.Issuer,
                 Audience = jwtOptions.Audience,
-                Expires = DateTime.UtcNow.AddMinutes(jwtOptions.Lifetime),
+                //Expires = DateTime.UtcNow.AddMinutes(jwtOptions.Lifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
                     SecurityAlgorithms.HmacSha256),
                 Subject = new ClaimsIdentity(new Claim[]

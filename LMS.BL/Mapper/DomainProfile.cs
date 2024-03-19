@@ -25,6 +25,7 @@ namespace LMS.BL.Mapper
              .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Name).Distinct()))
              .ReverseMap();
 
+            CreateMap<Courses, CoursesDTO>().ReverseMap();
         }
     }
 }

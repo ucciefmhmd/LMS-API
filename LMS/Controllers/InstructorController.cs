@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMS.BL.DTO;
 using LMS.BL.Interface;
+using LMS.BL.Repository;
 using LMS.DAL.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -18,13 +19,14 @@ namespace LMS.Controllers
         private readonly IInstructorRep instRep;
         private readonly IMapper mapper;
         private readonly ICourseRep courseRep;
-       
+        private readonly IUserRep userRep;
 
-        public InstructorController(IInstructorRep instRep, IMapper mapper , ICourseRep courseRep)
+        public InstructorController(IInstructorRep instRep, IMapper mapper , ICourseRep courseRep, IUserRep userRep)
         {
             this.instRep = instRep;
             this.mapper = mapper;
             this.courseRep = courseRep;
+            this.userRep = userRep;
         }
 
         [HttpGet]
@@ -41,22 +43,19 @@ namespace LMS.Controllers
             try
             {
                 if (id <= 0)
-                {
                     return BadRequest(new { error = "Invalid ID", message = "ID must be a positive integer." });
-                }
+                
 
                 var instructor = instRep.GetById(id);
                 if (instructor == null || instructor.userID != id)
-                {
                     return NotFound(new { error = "Instructor not found", message = $"Instructor with ID {id} is not found." });
-                }
+                
 
                 var instDtos = mapper.Map<InstructorsWithCourseNameDTO>(instructor);
                 return Ok(instDtos);
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, new { error = "Internal Server Error", message = "An error occurred while processing the request." });
             }
         }
@@ -72,16 +71,13 @@ namespace LMS.Controllers
                 
 
                 var instructor = instRep.GetByName(name);
-                if (instructor == null)
-                    return NotFound(new { error = "Instructor not found", message = $"Instructor with name {name} is not found." });
-                
 
                 var instDtos = mapper.Map<InstructorsWithCourseNameDTO>(instructor);
                 return Ok(instDtos);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Internal Server Error", message = "An error occurred while processing the request." });
+                return StatusCode(404, new { error = "Not Found", message = "Instructor with provided Name not found" });
             }
         }
 
@@ -116,9 +112,8 @@ namespace LMS.Controllers
                         data.InstructorCourse.Add(instructorCourse);
                     }
                     else
-                    {
                         return BadRequest("Invalid course name: " + nameOfCourse);
-                    }
+                    
                 }
 
                 instRep.Add(data);
@@ -138,7 +133,7 @@ namespace LMS.Controllers
         {
             try
             {
-                if (inst == null || id != inst.Id)
+                if (inst is null || id != inst.Id)
                     return BadRequest("Invalid instructor data.");
 
                 if (!ModelState.IsValid)
@@ -169,9 +164,8 @@ namespace LMS.Controllers
                         existingInstructor.InstructorCourse.Add(instructorCourse);
                     }
                     else
-                    {
                         return BadRequest("Invalid course name: " + courseName);
-                    }
+                    
                 }
 
                 instRep.Update(existingInstructor);
@@ -185,16 +179,18 @@ namespace LMS.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteInstructor(int id)
         {
             try
             {
                 var existingInstructor = instRep.GetById(id);
+                var UserInstructor = userRep.GetById(id);
 
-                if (existingInstructor == null)
+                if (existingInstructor is null && UserInstructor is null)
                     return NotFound("Instructor not found.");
 
                 instRep.Delete(existingInstructor);
+                userRep.Delete(UserInstructor);
 
                 return Ok(new { Message = "Instructor deleted successfully." });
             }
@@ -203,6 +199,7 @@ namespace LMS.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
+
 
 
     }

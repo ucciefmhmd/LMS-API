@@ -31,6 +31,7 @@ namespace LMS.BL.Repository
             db.SaveChanges();
         }
 
+
         public IEnumerable<Instructors> GetAllData()
         {
             return db.Instructors
@@ -52,10 +53,8 @@ namespace LMS.BL.Repository
                     .FirstOrDefault(a => a.userID == id && a.Users.Role == "instructor");
 
                 if (instructor == null)
-                {
                     throw new Exception("Instructor with provided ID not found.");
-                }
-
+                
                 return instructor;
             }
             catch (Exception ex)
@@ -76,9 +75,8 @@ namespace LMS.BL.Repository
                     .FirstOrDefault(a => a.Users.Name == name && a.Users.Role == "instructor");
 
                 if (instructor == null)
-                {
                     throw new Exception("Instructor with provided name not found.");
-                }
+                
 
                 return instructor;
             }

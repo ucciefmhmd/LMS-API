@@ -4,6 +4,7 @@ using LMS.DAL.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,12 +38,36 @@ namespace LMS.BL.Repository
 
         public Courses GetById(int id)
         {
-            return db.Courses.Find(id);
+            try
+            {
+                var course = db.Courses.Find(id);
+
+                if (course == null)
+                    throw new Exception("Course with provided ID not found.");
+
+                return course;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving course by ID.", ex);
+            }
         }
 
         public Courses GetByName(string name)
         {
-            return db.Courses.FirstOrDefault(a => a.Name == name);
+            try
+            {
+                var course = db.Courses.FirstOrDefault(a => a.Name == name);
+
+                if (course == null)
+                    throw new Exception("Course with provided Name not found.");
+
+                return course;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving course by Name.", ex);
+            }
         }
 
         public void Update(Courses crs)
