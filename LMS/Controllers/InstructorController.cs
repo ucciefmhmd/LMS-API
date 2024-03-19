@@ -2,6 +2,8 @@
 using LMS.BL.DTO;
 using LMS.BL.Interface;
 using LMS.DAL.Entity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,11 +12,13 @@ namespace LMS.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize(Policy = "AdminAndSubAdminPolicy")]
     public class InstructorController : ControllerBase
     {
         private readonly IInstructorRep instRep;
         private readonly IMapper mapper;
         private readonly ICourseRep courseRep;
+       
 
         public InstructorController(IInstructorRep instRep, IMapper mapper , ICourseRep courseRep)
         {
@@ -202,4 +206,5 @@ namespace LMS.Controllers
 
 
     }
+
 }
