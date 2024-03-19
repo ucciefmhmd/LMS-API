@@ -1,6 +1,7 @@
 ﻿using LMS.BL.Interface;
 using LMS.DAL.Database;
 using LMS.DAL.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,17 +33,59 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Instructors> GetAllData()
         {
-            return db.Instructors.Select(a => a);
+            return db.Instructors
+               .Include(a => a.Users)
+               .Include(a => a.InstructorCourse)
+                   .ThenInclude(ic => ic.Courses) 
+               .Where(a => a.Users.Role == "instructor")
+               .ToList();
         }
 
         public Instructors GetById(int id)
         {
-            return db.Instructors.Find(id);
+            try
+            {
+                var instructor = db.Instructors
+                    .Include(a => a.Users)
+                    .Include(a => a.InstructorCourse)
+                        .ThenInclude(ic => ic.Courses)
+                    .FirstOrDefault(a => a.userID == id && a.Users.Role == "instructor");
+
+                if (instructor == null)
+                {
+                    throw new Exception("Instructor with provided ID not found.");
+                }
+
+                return instructor;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving instructor by ID.", ex);
+            }
+
         }
 
         public Instructors GetByName(string name)
         {
-            return db.Instructors.FirstOrDefault(a => a.Users.Name == name);
+            try
+            {
+                var instructor = db.Instructors
+                    .Include(a => a.Users)
+                    .Include(a => a.InstructorCourse)
+                        .ThenInclude(ic => ic.Courses)
+                    .FirstOrDefault(a => a.Users.Name == name && a.Users.Role == "instructor");
+
+                if (instructor == null)
+                {
+                    throw new Exception("Instructor with provided name not found.");
+                }
+
+                return instructor;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving instructor by name.", ex);
+            }
         }
 
         public void Update(Instructors inst)

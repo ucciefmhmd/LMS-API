@@ -1,7 +1,9 @@
 
 using LMS.BL.Interface;
+using LMS.BL.Mapper;
 using LMS.BL.Repository;
 using LMS.DAL.Database;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS
@@ -11,6 +13,8 @@ namespace LMS
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
 
             // DataBase
             builder.Services.AddDbContext<LMSContext>(a =>
@@ -25,7 +29,8 @@ namespace LMS
             builder.Services.AddScoped<IQuestionRep , QuestionRep>();
             builder.Services.AddScoped<IUserRep , UserRep>();
 
-            // Add services to the container.
+            // Add Auto Mapper
+            builder.Services.AddAutoMapper(typeof(DomainProfile));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
