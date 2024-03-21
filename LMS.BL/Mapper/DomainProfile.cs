@@ -67,6 +67,7 @@ namespace LMS.BL.Mapper
                  .ReverseMap();
 
             CreateMap<Questions, QuestionCrudDTO>().ReverseMap();
+            CreateMap<Users, SubAdminDTO>().ReverseMap();
 
         }
     }

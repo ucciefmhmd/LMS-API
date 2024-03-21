@@ -1,6 +1,7 @@
 ﻿using LMS.BL.Interface;
 using LMS.DAL.Database;
 using LMS.DAL.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,12 +38,36 @@ namespace LMS.BL.Repository
 
         public Users GetById(int id)
         {
-            return db.Users.Find(id);
+            try
+            {
+                var user = db.Users.FirstOrDefault(a => a.Id == id);
+
+                if (user is null)
+                    throw new Exception("User with provided ID not found.");
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving user by ID.", ex);
+            }
         }
 
         public Users GetByName(string name)
         {
-            return db.Users.FirstOrDefault(a => a.Name == name);
+            try
+            {
+                var user = db.Users.FirstOrDefault(a => a.Name == name);
+
+                if (user is null)
+                    throw new Exception("User with provided Name not found.");
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving user by ID.", ex);
+            }
         }
 
         public void Update(Users user)
