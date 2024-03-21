@@ -1,6 +1,7 @@
 ﻿using LMS.BL.Interface;
 using LMS.DAL.Database;
 using LMS.DAL.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,12 +33,24 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Events> GetAllData()
         {
-            return db.Events.Select(a => a);
+            return db.Events.ToList();
         }
 
         public Events GetById(int id)
         {
-            return db.Events.Find(id);
+            try
+            {
+                var eventData = db.Events.Find(id);
+
+                if (eventData == null)
+                    throw new Exception("Event with provided ID not found.");
+
+                return eventData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving event by ID.", ex);
+            }
         }
 
         public void Update(Events eve)
