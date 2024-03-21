@@ -11,6 +11,7 @@ namespace LMS.DAL.Entity
     public class Group
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Chat { get; set; }
 
         [ForeignKey("Students")]

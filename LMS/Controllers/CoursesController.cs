@@ -25,15 +25,15 @@ namespace LMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CoursesDTO>> GetAll()
+        public ActionResult<IEnumerable<CoursesWithNumberOfExamDTO>> GetAll()
         {
             var courses = courseRep.GetAllData();
-            var courseDTO = mapper.Map<IEnumerable<CoursesDTO>>(courses);
+            var courseDTO = mapper.Map<IEnumerable<CoursesWithNumberOfExamDTO>>(courses);
             return Ok(courseDTO);
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<CoursesDTO> GetId(int id)
+        public ActionResult<CoursesWithNumberOfExamDTO> GetId(int id)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace LMS.Controllers
 
                 var courses = courseRep.GetById(id);
 
-                var courseDtos = mapper.Map<CoursesDTO>(courses);
+                var courseDtos = mapper.Map<CoursesWithNumberOfExamDTO>(courses);
                 return Ok(courseDtos);
             }
             catch (Exception ex)
@@ -52,7 +52,7 @@ namespace LMS.Controllers
         }
 
         [HttpGet("{name:alpha}")]
-        public ActionResult<CoursesDTO> GetName(string name)
+        public ActionResult<CoursesWithNumberOfExamDTO> GetName(string name)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace LMS.Controllers
 
                 var course = courseRep.GetByName(name);
 
-                var courseDtos = mapper.Map<CoursesDTO>(course);
+                var courseDtos = mapper.Map<CoursesWithNumberOfExamDTO>(course);
                 return Ok(courseDtos);
         }
             catch (Exception ex)

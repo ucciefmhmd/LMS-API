@@ -1,6 +1,7 @@
 ﻿using LMS.BL.Interface;
 using LMS.DAL.Database;
 using LMS.DAL.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,14 +34,14 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Courses> GetAllData()
         {
-            return db.Courses.Select(a => a);
+            return db.Courses.Include(a=>a.Exam).ToList();
         }
 
         public Courses GetById(int id)
         {
             try
             {
-                var course = db.Courses.Find(id);
+                var course = db.Courses.Include(a => a.Exam).FirstOrDefault(a => a.Id == id);
 
                 if (course == null)
                     throw new Exception("Course with provided ID not found.");
@@ -57,7 +58,7 @@ namespace LMS.BL.Repository
         {
             try
             {
-                var course = db.Courses.FirstOrDefault(a => a.Name == name);
+                var course = db.Courses.Include(a => a.Exam).FirstOrDefault(a => a.Name == name);
 
                 if (course == null)
                     throw new Exception("Course with provided Name not found.");

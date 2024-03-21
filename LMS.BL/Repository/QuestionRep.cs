@@ -1,6 +1,7 @@
 ﻿using LMS.BL.Interface;
 using LMS.DAL.Database;
 using LMS.DAL.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,12 +33,24 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Questions> GetAllData()
         {
-            return db.Questions.Select(a => a);
+            return db.Questions.Include(a => a.Exam).Select(a => a);
         }
 
         public Questions GetById(int id)
         {
-            return db.Questions.Find(id);
+            try
+            {
+                var question = db.Questions.Include(a => a.Exam).FirstOrDefault(a => a.Id == id);
+
+                if (question == null)
+                    throw new Exception("Question with provided ID not found.");
+
+                return question;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving question by ID.", ex);
+            }
         }
 
         public void Update(Questions ques)
