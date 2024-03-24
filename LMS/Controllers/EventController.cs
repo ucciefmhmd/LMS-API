@@ -81,8 +81,8 @@ namespace LMS.Controllers
         {
             try
             {
-                if (eve is null || id != eve.Id)
-                    return BadRequest("Invalid event data.");
+                //if (eve is null || id != eve.Id)
+                //    return BadRequest("Invalid event data.");
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -94,6 +94,7 @@ namespace LMS.Controllers
 
                 mapper.Map(eve, existingEvent);
                 
+                existingEvent.Id = id;
                 eventRep.Update(existingEvent);
 
                 return Ok(new { Message = "Event updated successfully." });

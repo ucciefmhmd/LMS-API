@@ -13,7 +13,7 @@ namespace LMS.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy = "AdminAndSubAdminPolicy")]
+    //[Authorize(Policy = "AdminAndSubAdminPolicy")]
     public class InstructorController : ControllerBase
     {
         private readonly IInstructorRep instRep;
@@ -133,8 +133,8 @@ namespace LMS.Controllers
         {
             try
             {
-                if (inst is null || id != inst.Id)
-                    return BadRequest("Invalid instructor data.");
+                //if (inst is null || id != inst.Id)
+                //    return BadRequest("Invalid instructor data.");
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -147,6 +147,7 @@ namespace LMS.Controllers
                 mapper.Map(inst, existingInstructor);
                 existingInstructor.Users.Role = "instructor";
 
+                
                 existingInstructor.InstructorCourse.Clear();
 
                 foreach (var courseName in inst.CourseName)
@@ -167,7 +168,7 @@ namespace LMS.Controllers
                         return BadRequest("Invalid course name: " + courseName);
                     
                 }
-
+                existingInstructor.userID = id;
                 instRep.Update(existingInstructor);
 
                 return Ok(new { Message = "Instructor updated successfully." });

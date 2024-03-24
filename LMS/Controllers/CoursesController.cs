@@ -97,8 +97,8 @@ namespace LMS.Controllers
         public ActionResult updateCourse(int id, CoursesDTO courseDto)
         {
             try {
-                if (courseDto is null || id != courseDto.Id)
-                    return BadRequest("Invalid Course Data");
+                //if (courseDto is null || id != courseDto.Id)
+                //    return BadRequest("Invalid Course Data");
                 if(!ModelState.IsValid)
                     return BadRequest(ModelState);
                 var existingCourse = courseRep.GetById(id);
@@ -108,6 +108,7 @@ namespace LMS.Controllers
 
                 mapper.Map(courseDto, existingCourse);
 
+                existingCourse.Id = id;
                 courseRep.Update(existingCourse);
 
                 return Ok(new { Message = "Course Updated Successfully" });

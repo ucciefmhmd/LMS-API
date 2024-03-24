@@ -116,8 +116,8 @@ namespace LMS.Controllers
         {
             try
             {
-                if (subadmin is null || id != subadmin.Id)
-                    return BadRequest("Invalid Subadmin data.");
+                //if (subadmin is null || id != subadmin.Id)
+                //    return BadRequest("Invalid Subadmin data.");
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -130,6 +130,7 @@ namespace LMS.Controllers
                 mapper.Map(subadmin, existingSubadmin);
                 existingSubadmin.Role = "subadmin";
 
+                existingSubadmin.Id = id;
                 subadminRep.Update(existingSubadmin);
 
                 return Ok(new { Message = "Subadmin updated successfully." });

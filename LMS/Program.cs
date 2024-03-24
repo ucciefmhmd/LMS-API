@@ -84,6 +84,15 @@ namespace LMS
 
             builder.Services.AddSingleton<IAuthorizationHandler, RoleRequirementHandler>();
 
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("Allownce", crosPolicy =>
+                {
+                    crosPolicy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -96,6 +105,8 @@ namespace LMS
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseCors("Allownce");
 
             app.MapControllers();
 

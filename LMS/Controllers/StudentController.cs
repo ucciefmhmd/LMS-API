@@ -105,12 +105,12 @@ namespace LMS.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] StudentCrudDTO std)
+        public IActionResult Update([FromRoute] int id, [FromBody] StudentCrudDTO std)
         {
             try
             {
-                if (std is null || id != std.Id)
-                    return BadRequest("Invalid student data.");
+                //if (std is null || id != std.Id)
+                //    return BadRequest("Invalid student data.");
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -123,6 +123,7 @@ namespace LMS.Controllers
                 mapper.Map(std, existingStudent);
                 existingStudent.Users.Role = "student";
 
+                existingStudent.userID = id;
                 stdRep.Update(existingStudent);
 
                 return Ok(new { Message = "Student updated successfully." });
@@ -132,6 +133,7 @@ namespace LMS.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
+
 
         [HttpDelete("{id}")]
         public IActionResult DeleteInstructor(int id)

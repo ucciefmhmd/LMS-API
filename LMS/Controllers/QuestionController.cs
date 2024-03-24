@@ -87,8 +87,8 @@ namespace LMS.Controllers
         {
             try
             {
-                if (question is null || id != question.Id)
-                    return BadRequest("Invalid Question Data");
+                //if (question is null || id != question.Id)
+                //    return BadRequest("Invalid Question Data");
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                 var existingQuestion = questionRep.GetById(id);
@@ -102,6 +102,8 @@ namespace LMS.Controllers
                     return BadRequest("Invalid Exam ID");
 
                 mapper.Map(question, existingQuestion);
+
+                existingQuestion.Id = id;
 
                 questionRep.Update(existingQuestion);
 

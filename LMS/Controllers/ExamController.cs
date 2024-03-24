@@ -126,8 +126,8 @@ namespace LMS.Controllers
         {
             try
             {
-                if (examDto is null || id != examDto.Id)
-                    return BadRequest("Invalid Exam Data");
+                //if (examDto is null || id != examDto.Id)
+                //    return BadRequest("Invalid Exam Data");
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                 var existingExam = examRep.GetById(id);
@@ -142,6 +142,7 @@ namespace LMS.Controllers
 
                 mapper.Map(examDto, existingExam);
 
+                existingExam.Id = id;
                 existingExam.StudentExam.Clear();
 
                 foreach (var IdOfStd in examDto.StudentIDs)
