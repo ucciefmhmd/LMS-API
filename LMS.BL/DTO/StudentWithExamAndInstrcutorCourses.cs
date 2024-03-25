@@ -21,8 +21,11 @@ namespace LMS.BL.DTO
         public string Password { get; set; }
         public string? Photo { get; set; }
         public List<string> CourseName { get; set; } = new List<string>();
+        public List<int> CourseIDs { get; set; } = new List<int>();
         public List<string> GroupName { get; set; } = new List<string>();
         public List<string> ExamName { get; set; } = new List<string>();
+        public List<int> ExamIDs { get; set; } = new List<int>();
+
 
     }
 }

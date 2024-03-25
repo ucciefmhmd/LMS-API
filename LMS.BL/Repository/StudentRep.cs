@@ -40,9 +40,13 @@ namespace LMS.BL.Repository
                 .Include(s => s.Group)
                     .ThenInclude(g => g.InstructorCourse)
                         .ThenInclude(ic => ic.Courses)
+                .Include(s => s.Group)
+                    .ThenInclude(g => g.InstructorCourse)
+                        .ThenInclude(ic => ic.Instructors)
                 .Where(s => s.Users.Role == "student")
                 .ToList();
         }
+
 
 
         public Students GetById(int id)

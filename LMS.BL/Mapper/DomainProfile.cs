@@ -36,7 +36,9 @@ namespace LMS.BL.Mapper
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Name).Distinct()))
+                .ForMember(dest => dest.CourseIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Id).Distinct()))
                 .ForMember(dest => dest.ExamName, opt => opt.MapFrom(src => src.StudentExam.Select(se => se.Exam.Name)))
+                .ForMember(dest => dest.ExamIDs, opt => opt.MapFrom(src => src.StudentExam.Select(se => se.Exam.Id)))
                 .ForMember(dest => dest.GroupName, opt => opt.MapFrom(src => src.Group.Select(g => g.Name)))
                 .ReverseMap();
 
@@ -50,6 +52,8 @@ namespace LMS.BL.Mapper
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Users.Photo))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Name).Distinct()))
+                .ForMember(dest => dest.InstructorIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID).Distinct()))
                 .ReverseMap();
 
 
