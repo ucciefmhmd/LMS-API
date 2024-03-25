@@ -33,7 +33,7 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Questions> GetAllData()
         {
-            return db.Questions.Include(a => a.Exam).Select(a => a);
+            return db.Questions.Include(a => a.Exam).ToList();
         }
 
         public Questions GetById(int id)

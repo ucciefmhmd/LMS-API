@@ -27,9 +27,11 @@ namespace LMS.Controllers
         public ActionResult<IEnumerable<QuestionWithExamNameDTO>> GetAll()
         {
             var questions = questionRep.GetAllData();
-            var questionDTO = mapper.Map<IEnumerable<QuestionWithExamNameDTO>>(questions);
-            return Ok(questionDTO);
+            var questionDTOs = mapper.Map<IEnumerable<QuestionWithExamNameDTO>>(questions);
+            return Ok(questionDTOs);
         }
+
+
 
         [HttpGet("{id:int}")]
         public ActionResult<QuestionWithExamNameDTO> GetId(int id)
