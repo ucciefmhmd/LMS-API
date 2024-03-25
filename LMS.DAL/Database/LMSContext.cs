@@ -34,7 +34,10 @@ namespace LMS.DAL.Database
                .WithMany(s => s.Group)
                .HasForeignKey(g => g.Std_ID)
                .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<Students>()
+               .HasMany(s => s.Group)
+               .WithOne(g => g.Students)
+               .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Students>()
               .HasOne(s => s.Users)
               .WithOne()
