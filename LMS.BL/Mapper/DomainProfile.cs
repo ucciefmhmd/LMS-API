@@ -71,6 +71,7 @@ namespace LMS.BL.Mapper
             CreateMap<Users, SubAdminDTO>().ReverseMap();
             
             CreateMap<Events, EventDto>().ReverseMap();
+            CreateMap<Users, LoginRequestDTO>().ReverseMap();
 
         }
     }

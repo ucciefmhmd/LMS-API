@@ -12,7 +12,7 @@ namespace LMS.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy = "AdminAndSubAdminPolicy")]
+    //[Authorize(Policy = "AdminAndSubAdminPolicy")]
     public class CoursesController : ControllerBase
     {
         private readonly ICourseRep courseRep;
