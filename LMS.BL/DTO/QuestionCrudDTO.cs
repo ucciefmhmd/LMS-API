@@ -11,11 +11,9 @@ namespace LMS.BL.DTO
         public int Id { get; set; }
         public string Question { get; set; }
         public string questionType { get; set; }
-        public string chooseOne { get; set; }
-        public string chooseTwo { get; set; }
-        public string chooseThree { get; set; }
-        public string chooseFour { get; set; }
         public string CorrectAnswer { get; set; }
         public int Exam_ID { get; set; }
+        public List<string> ChoosesName { get; set; } = new List<string>();
+
     }
 }

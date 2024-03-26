@@ -12,8 +12,8 @@ namespace LMS.BL.DTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Duration { get; set; }
-        public DateTime Date { get; set; }
+        public TimeOnly Duration { get; set; }
+        public DateOnly Date { get; set; }
         public double Max_Degree { get; set; }
         public double Min_Degree { get; set; }
         public List<int> StudentIDs { get; set; } = new List<int>();

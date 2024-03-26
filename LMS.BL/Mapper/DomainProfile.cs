@@ -68,9 +68,13 @@ namespace LMS.BL.Mapper
 
             CreateMap<Questions, QuestionWithExamNameDTO>()
                  .ForMember(dest => dest.ExamName, opt => opt.MapFrom(src => src.Exam.Name))
+                 .ForMember(dest => dest.ChoosesIDs, opt => opt.MapFrom(src => src.ChooseQuestion.Select(a=>a.Ques_ID)))
+                 .ForMember(dest => dest.ChoosesName, opt => opt.MapFrom(src => src.ChooseQuestion.Select(a=>a.Choose)))
                  .ReverseMap();
 
-            CreateMap<Questions, QuestionCrudDTO>().ReverseMap();
+            CreateMap<Questions, QuestionCrudDTO>()
+                .ForMember(dest => dest.ChoosesName, opt => opt.MapFrom(src => src.ChooseQuestion.Select(a=>a.Choose)))
+                .ReverseMap();
             
             CreateMap<Users, SubAdminDTO>().ReverseMap();
             

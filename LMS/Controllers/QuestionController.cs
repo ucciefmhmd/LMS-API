@@ -72,7 +72,12 @@ namespace LMS.Controllers
               
                 var model = mapper.Map<Questions>(question);
 
-                
+                foreach (var chooseName in question.ChoosesName)
+                {
+                    model.ChooseQuestion.Add(new ChooseQuestion { Choose = chooseName });
+                }
+
+
                 questionRep.Add(model);
 
                 return CreatedAtAction(nameof(GetId), new { id = model.Id }, new { Message = "Question added successfully." });
@@ -89,8 +94,6 @@ namespace LMS.Controllers
         {
             try
             {
-                //if (question is null || id != question.Id)
-                //    return BadRequest("Invalid Question Data");
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                 var existingQuestion = questionRep.GetById(id);
@@ -104,6 +107,14 @@ namespace LMS.Controllers
                     return BadRequest("Invalid Exam ID");
 
                 mapper.Map(question, existingQuestion);
+
+                existingQuestion.ChooseQuestion.Clear();
+
+                foreach (var chooseName in question.ChoosesName)
+                {
+                    existingQuestion.ChooseQuestion.Add(new ChooseQuestion { Choose = chooseName });
+                }
+
 
                 existingQuestion.Id = id;
 
@@ -126,6 +137,11 @@ namespace LMS.Controllers
 
                 if (existingQuestion is null)
                     return NotFound("Question not found.");
+
+                foreach (var chooseQuestion in existingQuestion.ChooseQuestion.ToList())
+                {
+                    existingQuestion.ChooseQuestion.Remove(chooseQuestion);
+                }
 
                 questionRep.Delete(existingQuestion);
 

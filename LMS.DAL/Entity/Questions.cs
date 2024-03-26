@@ -12,16 +12,13 @@ namespace LMS.DAL.Entity
     {
         public int Id { get; set; }
         public string Question { get; set; }
-        public string chooseOne { get; set; }
-        public string chooseTwo { get; set; }
-        public string chooseThree { get; set; }
-        public string chooseFour { get; set; }
         public string questionType { get; set; }
         public string CorrectAnswer { get; set; }
         [ForeignKey("Exam")]
         public int Exam_ID { get; set; }
         public virtual Exam Exam { get; set; }
         public ICollection<StudentQuestion> StudentQuestion { get; } = new HashSet<StudentQuestion>();
+        public ICollection<ChooseQuestion> ChooseQuestion { get; } = new HashSet<ChooseQuestion>();
 
     }
 }

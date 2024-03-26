@@ -33,14 +33,14 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Questions> GetAllData()
         {
-            return db.Questions.Include(a => a.Exam).ToList();
+            return db.Questions.Include(a => a.Exam).Include(a => a.ChooseQuestion).ToList();
         }
 
         public Questions GetById(int id)
         {
             try
             {
-                var question = db.Questions.Include(a => a.Exam).FirstOrDefault(a => a.Id == id);
+                var question = db.Questions.Include(a => a.Exam).Include(a => a.ChooseQuestion).FirstOrDefault(a => a.Id == id);
 
                 if (question == null)
                     throw new Exception("Question with provided ID not found.");
