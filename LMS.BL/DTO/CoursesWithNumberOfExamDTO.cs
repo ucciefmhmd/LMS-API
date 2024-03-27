@@ -14,5 +14,6 @@ namespace LMS.BL.DTO
         public DateOnly Start_Date { get; set; }
         public DateOnly End_Date { get; set; }
         public int numOfExam { get; set; }
+
     }
 }
