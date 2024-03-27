@@ -15,6 +15,7 @@ namespace LMS.DAL.Entity
         public int Std_ID { get; set; }
         [ForeignKey("Exam")]
         public int Exam_ID { get; set; }
+        public int Result { get; set; }
         public virtual Students Students { get; set; }
         public virtual Exam Exam { get; set; }
 
