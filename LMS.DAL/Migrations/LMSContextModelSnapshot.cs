@@ -59,12 +59,19 @@ namespace LMS.DAL.Migrations
                     b.Property<DateOnly>("End_Date")
                         .HasColumnType("date");
 
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("Start_Date")
                         .HasColumnType("date");
+
+                    b.Property<string>("UserAttachmentPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -86,6 +93,10 @@ namespace LMS.DAL.Migrations
                     b.Property<DateOnly>("End_Date")
                         .HasColumnType("date");
 
+                    b.Property<string>("HyperLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -96,6 +107,29 @@ namespace LMS.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("LMS.DAL.Entity.EventsCourses", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Course_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Event_ID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Course_ID");
+
+                    b.HasIndex("Event_ID");
+
+                    b.ToTable("EventsCourses");
                 });
 
             modelBuilder.Entity("LMS.DAL.Entity.Exam", b =>
@@ -193,6 +227,10 @@ namespace LMS.DAL.Migrations
                 {
                     b.Property<int>("userID")
                         .HasColumnType("int");
+
+                    b.Property<string>("Experience")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Specialization")
                         .IsRequired()
@@ -343,12 +381,14 @@ namespace LMS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Photo")
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
+                    b.Property<int>("SSN")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserAttachmentPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -365,6 +405,25 @@ namespace LMS.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("LMS.DAL.Entity.EventsCourses", b =>
+                {
+                    b.HasOne("LMS.DAL.Entity.Courses", "Courses")
+                        .WithMany("EventsCourses")
+                        .HasForeignKey("Course_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.DAL.Entity.Events", "Events")
+                        .WithMany("EventsCourses")
+                        .HasForeignKey("Event_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Courses");
+
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("LMS.DAL.Entity.Exam", b =>
@@ -506,6 +565,8 @@ namespace LMS.DAL.Migrations
 
             modelBuilder.Entity("LMS.DAL.Entity.Courses", b =>
                 {
+                    b.Navigation("EventsCourses");
+
                     b.Navigation("Exam");
 
                     b.Navigation("InstructorCourse");
@@ -513,6 +574,8 @@ namespace LMS.DAL.Migrations
 
             modelBuilder.Entity("LMS.DAL.Entity.Events", b =>
                 {
+                    b.Navigation("EventsCourses");
+
                     b.Navigation("UserEvent");
                 });
 

@@ -33,6 +33,7 @@ namespace LMS
             builder.Services.AddScoped<IExamRep , ExamRep>();
             builder.Services.AddScoped<IQuestionRep , QuestionRep>();
             builder.Services.AddScoped<IUserRep , UserRep>();
+            builder.Services.AddScoped<IUploadFile , UploadFile>(); 
 
             // Add Auto Mapper
             builder.Services.AddAutoMapper(typeof(DomainProfile));
@@ -105,6 +106,8 @@ namespace LMS
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
             app.UseCors("Allownce");
 

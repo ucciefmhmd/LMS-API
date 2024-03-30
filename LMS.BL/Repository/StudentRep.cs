@@ -13,10 +13,12 @@ namespace LMS.BL.Repository
     public class StudentRep : IStudentRep
     {
         private readonly LMSContext db;
+        private readonly IUploadFile uploadFile;
 
-        public StudentRep(LMSContext db)
+        public StudentRep(LMSContext db, IUploadFile uploadFile)
         {
             this.db = db;
+            this.uploadFile = uploadFile;
         }
 
         public void Add(Students std)

@@ -17,13 +17,15 @@ namespace LMS.Controllers
         private readonly IMapper mapper;
         private readonly ICourseRep courseRep;
         private readonly IStudentRep stdRep;
+        private readonly IQuestionRep quesRep;
 
-        public ExamController(IExamRep examRep, IMapper mapper, ICourseRep courseRep, IStudentRep stdRep )
+        public ExamController(IExamRep examRep, IMapper mapper, ICourseRep courseRep, IStudentRep stdRep , IQuestionRep quesRep)
         {
             this.examRep = examRep;
             this.mapper = mapper;
             this.courseRep = courseRep;
             this.stdRep = stdRep;
+            this.quesRep = quesRep;
         }
 
         [HttpGet]
@@ -92,23 +94,19 @@ namespace LMS.Controllers
 
                 var model = mapper.Map<Exam>(exam);
 
-                foreach (var IdOfStd in exam.StudentIDs)
+                foreach (var questionId in exam.QuestionIDs)
                 {
-                    var examstd = stdRep.GetById(IdOfStd);
+                    var question = quesRep.GetById(questionId);
 
-                    if (examstd != null)
+                    if (question != null)
                     {
-                        var studentExam = new StudentExam
-                        {
-                            Std_ID = examstd.userID,
-                            Exam_ID = model.Id
-                        };
-
-                        model.StudentExam.Add(studentExam);
+                        Console.WriteLine(question);
+                        model.Questions.Add(question);
                     }
                     else
-                        return BadRequest("Invalid Student Id: " + IdOfStd);
-
+                    {
+                        return BadRequest($"Invalid Question ID: {questionId}");
+                    }
                 }
                 examRep.Add(model);
 
@@ -143,25 +141,21 @@ namespace LMS.Controllers
                 mapper.Map(examDto, existingExam);
 
                 existingExam.Id = id;
-                existingExam.StudentExam.Clear();
+                existingExam.Questions.Clear();
 
-                foreach (var IdOfStd in examDto.StudentIDs)
+                foreach (var questionId in examDto.QuestionIDs)
                 {
-                    var examstd = stdRep.GetById(IdOfStd);
+                    var question = quesRep.GetById(questionId);
 
-                    if (examstd != null)
+                    if (question != null)
                     {
-                        var studentExam = new StudentExam
-                        {
-                            Std_ID = examstd.userID,
-                            Exam_ID = existingExam.Id
-                        };
-
-                        existingExam.StudentExam.Add(studentExam);
+                        Console.WriteLine(question);
+                        existingExam.Questions.Add(question);
                     }
                     else
-                        return BadRequest("Invalid Student Id: " + IdOfStd);
-
+                    {
+                        return BadRequest($"Invalid Question ID: {questionId}");
+                    }
                 }
 
                 examRep.Update(existingExam);

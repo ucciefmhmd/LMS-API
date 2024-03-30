@@ -70,7 +70,7 @@ namespace LMS.Controllers
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim("Photo", user.Photo)
+                    //new Claim("Photo", user.Photo)
                 }),
                 //Expires = DateTime.UtcNow.AddMinutes(jwtOptions.Lifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -124,7 +124,7 @@ namespace LMS.Controllers
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim("Photo", user.Photo)
+                    //new Claim("Photo", user.Photo)
                 }),
                 //Expires = DateTime.UtcNow.AddMinutes(jwtOptions.Lifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -13,6 +13,8 @@ namespace LMS.BL.DTO
         public string Description { get; set; }
         public DateOnly Start_Date { get; set; }
         public DateOnly End_Date { get; set; }
+        public string Material { get; set; }
+        public string? UserAttachmentPath { get; set; }
         public int numOfExam { get; set; }
 
     }

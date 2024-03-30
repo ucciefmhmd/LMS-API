@@ -17,15 +17,18 @@ namespace LMS.Controllers
     public class StudentController : ControllerBase
     {
         private readonly LMSContext db;
+        private readonly IUploadFile uploadFile;
         private readonly IStudentRep stdRep;
         private readonly IMapper mapper;
         private readonly IUserRep userRep;
         private readonly ICourseRep courseRep;
         private readonly IInstructorRep instRep;
+        public string ServerRootPath { get { return $"{Request.Scheme}://{Request.Host}{Request.PathBase}"; } }
 
-        public StudentController(LMSContext db ,IStudentRep stdRep, IMapper mapper, IUserRep userRep, ICourseRep courseRep, IInstructorRep instRep)
+        public StudentController(LMSContext db, IUploadFile uploadFile ,IStudentRep stdRep, IMapper mapper, IUserRep userRep, ICourseRep courseRep, IInstructorRep instRep)
         {
             this.db = db;
+            this.uploadFile = uploadFile;
             this.stdRep = stdRep;
             this.mapper = mapper;
             this.userRep = userRep;
@@ -38,6 +41,19 @@ namespace LMS.Controllers
         {
             var students = stdRep.GetAllData();
             var studentDtos = mapper.Map<IEnumerable<StudentWithExamAndInstrcutorCourses>>(students);
+            foreach (var item in studentDtos)
+            {
+                if (item.UserAttachmentPath != null)
+                {
+                    if (item.UserAttachmentPath.StartsWith("\\"))
+                    {
+                        if (!string.IsNullOrEmpty(item.UserAttachmentPath))
+                        {
+                            item.UserAttachmentPath = ServerRootPath + item.UserAttachmentPath.Replace('\\', '/');
+                        }
+                    }
+                }
+            }
             return Ok(studentDtos);
         }
 
@@ -57,6 +73,18 @@ namespace LMS.Controllers
 
 
                 var studentDtos = mapper.Map<StudentWithExamAndInstrcutorCourses>(student);
+
+                    if (studentDtos.UserAttachmentPath != null)
+                    {
+                        if (studentDtos.UserAttachmentPath.StartsWith("\\"))
+                        {
+                            if (!string.IsNullOrEmpty(studentDtos.UserAttachmentPath))
+                            {
+                            studentDtos.UserAttachmentPath = ServerRootPath + studentDtos.UserAttachmentPath.Replace('\\', '/');
+                            }
+                        }
+                    }
+                
                 return Ok(studentDtos);
             }
             catch (Exception ex)
@@ -78,6 +106,16 @@ namespace LMS.Controllers
                 var student = stdRep.GetByName(name);
 
                 var studentDtos = mapper.Map<StudentWithExamAndInstrcutorCourses>(student);
+                if (studentDtos.UserAttachmentPath != null)
+                {
+                    if (studentDtos.UserAttachmentPath.StartsWith("\\"))
+                    {
+                        if (!string.IsNullOrEmpty(studentDtos.UserAttachmentPath))
+                        {
+                            studentDtos.UserAttachmentPath = ServerRootPath + studentDtos.UserAttachmentPath.Replace('\\', '/');
+                        }
+                    }
+                }
                 return Ok(studentDtos);
             }
             catch (Exception ex)
@@ -88,7 +126,7 @@ namespace LMS.Controllers
 
 
         [HttpPost]
-        public IActionResult Add([FromBody] StudentCrudDTO std)
+        public async Task<IActionResult> Add([FromForm] StudentCrudDTO std)
         {
             try
             {
@@ -101,8 +139,8 @@ namespace LMS.Controllers
                 var data = mapper.Map<Students>(std);
                 data.Users.Role = "student";
 
-
                 foreach (var nameOfCourse in std.CourseName)
+
                 {
                     var course = courseRep.GetByName(nameOfCourse);
 
@@ -118,7 +156,6 @@ namespace LMS.Controllers
                             {
                                 Console.WriteLine($"Found instructor: {inst.userID}");
 
-                                // Query InstructorCourse directly based on course ID and instructor ID
                                 var instructorCourse = db.InstructorCourse
                                     .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
 
@@ -154,6 +191,10 @@ namespace LMS.Controllers
                     }
                 }
 
+                Random rnd = new Random();
+                var path = $"Images\\Students\\Student{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                var attachmentPath = await uploadFile.UploadFileServices(std.ImageFile, path);
+                data.Users.UserAttachmentPath = attachmentPath;
 
                 stdRep.Add(data);
 
@@ -168,7 +209,7 @@ namespace LMS.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] StudentCrudDTO std)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] StudentCrudDTO std)
         {
             try
             {
@@ -236,6 +277,13 @@ namespace LMS.Controllers
                     }
                 }
 
+                if (std.ImageFile != null)
+                {
+                    Random rnd = new Random();
+                    var path = $"Images\\Students\\Student{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                    var attachmentPath = await uploadFile.UploadFileServices(std.ImageFile, path);
+                    existingStudent.Users.UserAttachmentPath = attachmentPath;
+                }
 
                 existingStudent.userID = id;
                 stdRep.Update(existingStudent);

@@ -33,14 +33,14 @@ namespace LMS.BL.Repository
 
         public IEnumerable<Events> GetAllData()
         {
-            return db.Events.ToList();
+            return db.Events.Include(a => a.EventsCourses).ThenInclude(a=>a.Courses).ToList();
         }
 
         public Events GetById(int id)
         {
             try
             {
-                var eventData = db.Events.Find(id);
+                var eventData = db.Events.Include(a => a.EventsCourses).ThenInclude(a => a.Courses).FirstOrDefault(a => a.Id == id);
 
                 if (eventData == null)
                     throw new Exception("Event with provided ID not found.");

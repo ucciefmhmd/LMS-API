@@ -1,0 +1,75 @@
+ static void Main(string[] args)
+        {
+            IdentityMatrix(5);
+
+            Console.WriteLine("");
+
+            int fact = 5;
+            Console.WriteLine($"Factorial of {fact} : {Factorial(fact)}");
+            
+        }
+
+        static void IdentityMatrix(int n)
+        {
+            int[,] mat = new int[n,n];
+            for (int i = 0; i < n; i++)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    mat[i,j] = i == j ? 1 : 0;
+                }
+            }
+
+            for (int i = 0;i < n; i++)
+            {
+                for (int j = 0;j < n; j++)
+                {
+                    Console.Write($"{mat[i,j]} ");
+                }
+                Console.WriteLine("");
+            }
+        }
+    
+        static int Factorial(int n)
+        {
+            if (n == 0)
+                return 1;
+
+            return n * Factorial(n-1);
+        }
+
+
+---------------------------------------------------------------------------------------------
+
+ public class DepartmentRep : IDepartmentRep
+ {
+     MVCDay4 db = new MVCDay4();
+     public void Add(Department dept)
+     {
+         db.Department.Add(dept);
+         db.SaveChanges();
+     }
+
+     public void Delete(int id)
+     {
+         var model = db.Department.Find(id);
+         db.Department.Remove(model);
+         db.SaveChanges();
+     }
+
+     public List<Department> GetAllData()
+     {
+         return db.Department.ToList();
+     }
+
+     public Department GetById(int id)
+     {
+         return db.Department.FirstOrDefault(a => a.Id == id);
+     }
+
+     public void Update(Department dept)
+     {
+         db.Update(dept);
+         db.SaveChanges();
+     }
+ }

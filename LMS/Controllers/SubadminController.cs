@@ -3,6 +3,7 @@ using LMS.BL.DTO;
 using LMS.BL.Interface;
 using LMS.BL.Repository;
 using LMS.DAL.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,14 +12,19 @@ namespace LMS.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    //[Authorize(Policy = "AdminPolicy")]
     public class SubadminController : ControllerBase
     {
         private readonly IUserRep subadminRep;
+        private readonly IUploadFile uploadFile;
         private readonly IMapper mapper;
 
-        public SubadminController(IUserRep subadminRep , IMapper mapper)
+        public string ServerRootPath { get { return $"{Request.Scheme}://{Request.Host}{Request.PathBase}"; } }
+
+        public SubadminController(IUserRep subadminRep, IUploadFile uploadFile, IMapper mapper)
         {
             this.subadminRep = subadminRep;
+            this.uploadFile = uploadFile;
             this.mapper = mapper;
         }
 
@@ -28,6 +34,19 @@ namespace LMS.Controllers
             var AllData = subadminRep.GetAllData();
             var subadmins = AllData.Where(a => a.Role == "subadmin").Select(a=>a);
             var sunadminDtos = mapper.Map<IEnumerable<SubAdminDTO>>(subadmins);
+            foreach (var item in sunadminDtos)
+            {
+                if (item.UserAttachmentPath != null)
+                {
+                    if (item.UserAttachmentPath.StartsWith("\\"))
+                    {
+                        if (!string.IsNullOrEmpty(item.UserAttachmentPath))
+                        {
+                            item.UserAttachmentPath = ServerRootPath + item.UserAttachmentPath.Replace('\\', '/');
+                        }
+                    }
+                }
+            }
             return Ok(sunadminDtos);
         }
 
@@ -48,6 +67,17 @@ namespace LMS.Controllers
                     
 
                     var subadminDtos = mapper.Map<SubAdminDTO>(subadmin);
+
+                    if (subadminDtos.UserAttachmentPath != null)
+                    {
+                        if (subadminDtos.UserAttachmentPath.StartsWith("\\"))
+                        {
+                            if (!string.IsNullOrEmpty(subadminDtos.UserAttachmentPath))
+                            {
+                                subadminDtos.UserAttachmentPath = ServerRootPath + subadminDtos.UserAttachmentPath.Replace('\\', '/');
+                            }
+                        }
+                    }
                     return Ok(subadminDtos);
                 }
                 return NotFound();
@@ -87,7 +117,7 @@ namespace LMS.Controllers
 
 
         [HttpPost]
-        public IActionResult Add([FromBody] SubAdminDTO subadmin)
+        public async Task<IActionResult> Add([FromForm] SubAdminDTO subadmin)
         {
             try
             {
@@ -99,6 +129,11 @@ namespace LMS.Controllers
 
                 var data = mapper.Map<Users>(subadmin);
                 data.Role = "subadmin";
+
+                Random rnd = new Random();
+                var path = $"Images\\Subadmins\\Subadmin{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                var attachmentPath = await uploadFile.UploadFileServices(subadmin.ImageFile, path);
+                data.UserAttachmentPath = attachmentPath;
 
                 subadminRep.Add(data);
 
@@ -112,7 +147,7 @@ namespace LMS.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] SubAdminDTO subadmin)
+        public async Task<IActionResult> Update(int id, [FromForm] SubAdminDTO subadmin)
         {
             try
             {
@@ -129,6 +164,14 @@ namespace LMS.Controllers
 
                 mapper.Map(subadmin, existingSubadmin);
                 existingSubadmin.Role = "subadmin";
+
+                if (subadmin.ImageFile != null)
+                {
+                    Random rnd = new Random();
+                    var path = $"Images\\Subadmins\\Ssubadmin{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                    var attachmentPath = await uploadFile.UploadFileServices(subadmin.ImageFile, path);
+                    existingSubadmin.UserAttachmentPath = attachmentPath;
+                }
 
                 existingSubadmin.Id = id;
                 subadminRep.Update(existingSubadmin);

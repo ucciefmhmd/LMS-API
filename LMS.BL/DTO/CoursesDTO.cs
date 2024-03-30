@@ -1,4 +1,5 @@
 ﻿using LMS.DAL.Entity;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace LMS.BL.DTO
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Material { get; set; }
+        public string? UserAttachmentPath { get; set; }
+        public IFormFile ImageFile { get; set; }
         public DateOnly Start_Date { get; set; }
         public DateOnly End_Date { get; set; }
     }

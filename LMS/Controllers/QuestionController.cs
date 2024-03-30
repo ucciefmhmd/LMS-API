@@ -52,6 +52,26 @@ namespace LMS.Controllers
             }
         }
 
+        [HttpGet("exam/{id:int}")]
+        public ActionResult<IEnumerable<QuestionWithExamNameDTO>> GetQuestionsByExamId(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest(new { error = "Invalid ID", message = "ID must be a positive integer." });
+
+                var questions = questionRep.GetByExamId(id);
+
+                var questionDtos = mapper.Map<IEnumerable<QuestionWithExamNameDTO>>(questions);
+                return Ok(questionDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal Server Error", message = "An error occurred while processing the request." });
+            }
+        }
+
+
 
         [HttpPost]
         public ActionResult CreateQuestion([FromBody] QuestionCrudDTO question)

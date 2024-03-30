@@ -14,11 +14,13 @@ namespace LMS.Controllers
     {
         private readonly IEventRep eventRep;
         private readonly IMapper mapper;
+        private readonly ICourseRep courseRep;
 
-        public EventController(IEventRep eventRep, IMapper mapper)
+        public EventController(IEventRep eventRep, IMapper mapper, ICourseRep courseRep)
         {
             this.eventRep = eventRep;
             this.mapper = mapper;
+            this.courseRep = courseRep;
         }
         [HttpGet]
         public ActionResult<IEnumerable<EventDto>> GetAllEvents()
@@ -63,7 +65,26 @@ namespace LMS.Controllers
                     return BadRequest(ModelState);
 
                 var data = mapper.Map<Events>(eve);
-                
+
+                foreach (var nameOfCourse in eve.CoursesName)
+                {
+                    var course = courseRep.GetByName(nameOfCourse);
+
+                    if (course != null)
+                    {
+                        var eventCourse = new EventsCourses
+                        {
+                            Event_ID = data.Id,
+                            Course_ID = course.Id
+                        };
+
+                        data.EventsCourses.Add(eventCourse);
+                    }
+                    else
+                        return BadRequest("Invalid course name: " + nameOfCourse);
+
+                }
+
                 eventRep.Add(data);
 
                 return CreatedAtAction(nameof(GetId), new { id = data.Id }, new { Message = "Event added successfully." });
@@ -93,6 +114,25 @@ namespace LMS.Controllers
                     return NotFound("Event not found.");
 
                 mapper.Map(eve, existingEvent);
+
+                foreach (var nameOfCourse in eve.CoursesName)
+                {
+                    var course = courseRep.GetByName(nameOfCourse);
+
+                    if (course != null)
+                    {
+                        var eventCourse = new EventsCourses
+                        {
+                            Event_ID = eve.Id,
+                            Course_ID = course.Id
+                        };
+
+                        existingEvent.EventsCourses.Add(eventCourse);
+                    }
+                    else
+                        return BadRequest("Invalid course name: " + nameOfCourse);
+
+                }
                 
                 existingEvent.Id = id;
                 eventRep.Update(existingEvent);

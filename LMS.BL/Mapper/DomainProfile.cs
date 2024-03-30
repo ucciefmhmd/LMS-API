@@ -19,8 +19,9 @@ namespace LMS.BL.Mapper
              .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Users.Email))
              .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Users.Password))
              .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Users.Phone))
+             .ForMember(dest => dest.SSN, opt => opt.MapFrom(src => src.Users.SSN))
              .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Users.Address))
-             .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Users.Photo))
+             .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
              .ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialization))
              .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Name).Distinct()))
              .ReverseMap();
@@ -32,7 +33,8 @@ namespace LMS.BL.Mapper
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Users.Password))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Users.Phone))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Users.Address))
-                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Users.Photo))
+                .ForMember(dest => dest.SSN, opt => opt.MapFrom(src => src.Users.SSN))
+                .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Name).Distinct()))
@@ -50,36 +52,44 @@ namespace LMS.BL.Mapper
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Users.Password))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Users.Phone))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Users.Address))
-                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Users.Photo))
+                .ForMember(dest => dest.SSN, opt => opt.MapFrom(src => src.Users.SSN))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Name).Distinct()))
                 .ForMember(dest => dest.InstructorIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID).Distinct()))
                 .ReverseMap();
 
 
             CreateMap<Courses, CoursesDTO>().ReverseMap();
+
             CreateMap<Courses, CoursesWithNumberOfExamDTO>()
                 .ForMember(dest => dest.numOfExam, opt => opt.MapFrom(src => src.Exam.Count()));
 
             CreateMap<Exam, ExamsWithQuestionsAndCoursesDTO>()
-                .ForMember(dest => dest.StudentIDs, opt => opt.MapFrom(src => src.StudentExam.Select(a => a.Students.userID)))
+                .ForMember(dest => dest.QuestionsName, opt => opt.MapFrom(src => src.Questions.Select(a=>a.Question)))
+                .ForMember(dest => dest.QuestionIDs, opt => opt.MapFrom(src => src.Questions.Select(a=>a.Id)))
                 .ForMember(dest => dest.NumberOfQuestions, opt => opt.MapFrom(src => src.Questions.Count()))
                 .ReverseMap();
 
             CreateMap<Questions, QuestionWithExamNameDTO>()
                  .ForMember(dest => dest.ExamName, opt => opt.MapFrom(src => src.Exam.Name))
+                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Exam.Courses.Name))
+                 .ForMember(dest => dest.Course_ID, opt => opt.MapFrom(src => src.Exam.Courses.Id))
                  .ForMember(dest => dest.ChoosesIDs, opt => opt.MapFrom(src => src.ChooseQuestion.Select(a=>a.Ques_ID)))
                  .ForMember(dest => dest.ChoosesName, opt => opt.MapFrom(src => src.ChooseQuestion.Select(a=>a.Choose)))
                  .ReverseMap();
 
             CreateMap<Questions, QuestionCrudDTO>()
                 .ForMember(dest => dest.ChoosesName, opt => opt.MapFrom(src => src.ChooseQuestion.Select(a=>a.Choose)))
+                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Exam.Courses.Name))
                 .ReverseMap();
             
             CreateMap<Users, SubAdminDTO>().ReverseMap();
             
-            CreateMap<Events, EventDto>().ReverseMap();
+            CreateMap<Events, EventDto>()
+                .ForMember(dest => dest.CoursesName, opt => opt.MapFrom(src => src.EventsCourses.Select(a=>a.Courses.Name)))
+                .ReverseMap();
             CreateMap<Users, LoginRequestDTO>().ReverseMap();
 
         }

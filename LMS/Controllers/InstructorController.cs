@@ -17,13 +17,17 @@ namespace LMS.Controllers
     public class InstructorController : ControllerBase
     {
         private readonly IInstructorRep instRep;
+        private readonly IUploadFile uploadFile;
         private readonly IMapper mapper;
         private readonly ICourseRep courseRep;
         private readonly IUserRep userRep;
 
-        public InstructorController(IInstructorRep instRep, IMapper mapper , ICourseRep courseRep, IUserRep userRep)
+        public string ServerRootPath { get { return $"{Request.Scheme}://{Request.Host}{Request.PathBase}"; } }
+
+        public InstructorController(IInstructorRep instRep, IUploadFile uploadFile, IMapper mapper , ICourseRep courseRep, IUserRep userRep)
         {
             this.instRep = instRep;
+            this.uploadFile = uploadFile;
             this.mapper = mapper;
             this.courseRep = courseRep;
             this.userRep = userRep;
@@ -34,6 +38,19 @@ namespace LMS.Controllers
         {
             var instructors = instRep.GetAllData();
             var instDtos = mapper.Map<IEnumerable<InstructorsWithCourseNameDTO>>(instructors);
+            foreach (var item in instDtos)
+            {
+                if (item.UserAttachmentPath != null)
+                {
+                    if (item.UserAttachmentPath.StartsWith("\\"))
+                    {
+                        if (!string.IsNullOrEmpty(item.UserAttachmentPath))
+                        {
+                            item.UserAttachmentPath = ServerRootPath + item.UserAttachmentPath.Replace('\\', '/');
+                        }
+                    }
+                }
+            }
             return Ok(instDtos);
         }
 
@@ -52,6 +69,16 @@ namespace LMS.Controllers
                 
 
                 var instDtos = mapper.Map<InstructorsWithCourseNameDTO>(instructor);
+                if (instDtos.UserAttachmentPath != null)
+                {
+                    if (instDtos.UserAttachmentPath.StartsWith("\\"))
+                    {
+                        if (!string.IsNullOrEmpty(instDtos.UserAttachmentPath))
+                        {
+                            instDtos.UserAttachmentPath = ServerRootPath + instDtos.UserAttachmentPath.Replace('\\', '/');
+                        }
+                    }
+                }
                 return Ok(instDtos);
             }
             catch (Exception ex)
@@ -83,7 +110,7 @@ namespace LMS.Controllers
 
 
         [HttpPost]
-        public IActionResult Add([FromBody] InstructorsWithCourseNameDTO inst)
+        public async Task<IActionResult> Add([FromForm] InstructorsWithCourseNameDTO inst)
         {
             try
             {
@@ -116,6 +143,12 @@ namespace LMS.Controllers
                     
                 }
 
+                Random rnd = new Random();
+                var path = $"Images\\Instructors\\Instructor{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                var attachmentPath = await uploadFile.UploadFileServices(inst.ImageFile, path);
+                data.Users.UserAttachmentPath = attachmentPath;
+
+
                 instRep.Add(data);
 
                 return CreatedAtAction(nameof(GetId), new { id = data.userID }, new { Message = "Instructor added successfully." });
@@ -129,7 +162,7 @@ namespace LMS.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] InstructorsWithCourseNameDTO inst)
+        public async Task<IActionResult> Update(int id, [FromForm] InstructorsWithCourseNameDTO inst)
         {
             try
             {
@@ -168,6 +201,16 @@ namespace LMS.Controllers
                         return BadRequest("Invalid course name: " + courseName);
                     
                 }
+
+
+                if (inst.ImageFile != null)
+                {
+                    Random rnd = new Random();
+                    var path = $"Images\\Instructors\\Instructor{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                    var attachmentPath = await uploadFile.UploadFileServices(inst.ImageFile, path);
+                    existingInstructor.Users.UserAttachmentPath = attachmentPath;
+                }
+
                 existingInstructor.userID = id;
                 instRep.Update(existingInstructor);
 
