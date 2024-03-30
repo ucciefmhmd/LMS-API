@@ -10,7 +10,7 @@ namespace LMS.BL.DTO
     public class StudentCrudDTO
     {
         public int Id { get; set; }
-        public int SSN { get; set; }
+        public string SSN { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
         public string Title { get; set; }

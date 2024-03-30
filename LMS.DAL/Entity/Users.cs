@@ -15,7 +15,7 @@ namespace LMS.DAL.Entity
         [StringLength(20)]
         public string Name { get; set; }
         public string Role { get; set; }
-        public int SSN { get; set; }
+        public string SSN { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }

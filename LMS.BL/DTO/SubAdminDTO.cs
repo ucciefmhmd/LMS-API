@@ -12,7 +12,7 @@ namespace LMS.BL.DTO
     public class SubAdminDTO
     {
         public int Id { get; set; }
-        public int SSN { get; set; }
+        public string SSN { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
