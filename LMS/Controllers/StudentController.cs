@@ -169,7 +169,7 @@ namespace LMS.Controllers
                                         Chat = "",
                                         Std_ID = data.userID,
                                         InstructorCourse = instructorCourse,
-                                        InstCos_ID = instructorCourse.Id // Setting InstCos_ID in Group
+                                        InstCos_ID = instructorCourse.Id 
                                     };
 
                                     data.Group.Add(group);
@@ -295,9 +295,6 @@ namespace LMS.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
-
-
-
 
 
 

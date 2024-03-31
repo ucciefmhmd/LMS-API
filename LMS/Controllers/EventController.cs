@@ -54,7 +54,7 @@ namespace LMS.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] EventDto eve)
+        public IActionResult Add([FromForm] EventDto eve)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace LMS.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] EventDto eve)
+        public IActionResult Update(int id, [FromForm] EventDto eve)
         {
             try
             {
