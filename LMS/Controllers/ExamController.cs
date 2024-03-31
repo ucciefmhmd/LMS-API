@@ -94,20 +94,28 @@ namespace LMS.Controllers
 
                 var model = mapper.Map<Exam>(exam);
 
-                foreach (var questionId in exam.QuestionIDs)
-                {
-                    var question = quesRep.GetById(questionId);
+                //foreach (var questionId in exam.QuestionIDs)
+                //{
+                //    var question = quesRep.GetById(questionId);
 
-                    if (question != null)
-                    {
-                        Console.WriteLine(question);
-                        model.Questions.Add(question);
-                    }
-                    else
-                    {
-                        return BadRequest($"Invalid Question ID: {questionId}");
-                    }
+                //    if (question != null)
+                //    {
+                //        Console.WriteLine(question);
+                //        model.Questions.Add(question);
+                //    }
+                //    else
+                //    {
+                //        return BadRequest($"Invalid Question ID: {questionId}");
+                //    }
+                //}
+                var questions = exam.AllQuestion.Select(question => mapper.Map<Questions>(question)).ToList();
+
+                foreach (var question in questions)
+                {
+                    model.Questions.Add(question);
                 }
+
+
                 examRep.Add(model);
 
                 return CreatedAtAction(nameof(GetId), new { id = model.Id }, new { Message = "Exam added successfully." });
@@ -141,21 +149,12 @@ namespace LMS.Controllers
                 mapper.Map(examDto, existingExam);
 
                 existingExam.Id = id;
-                existingExam.Questions.Clear();
 
-                foreach (var questionId in examDto.QuestionIDs)
+                var questions = examDto.AllQuestion.Select(question => mapper.Map<Questions>(question)).ToList();
+
+                foreach (var question in questions)
                 {
-                    var question = quesRep.GetById(questionId);
-
-                    if (question != null)
-                    {
-                        Console.WriteLine(question);
-                        existingExam.Questions.Add(question);
-                    }
-                    else
-                    {
-                        return BadRequest($"Invalid Question ID: {questionId}");
-                    }
+                    existingExam.Questions.Add(question);
                 }
 
                 examRep.Update(existingExam);
