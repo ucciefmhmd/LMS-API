@@ -15,7 +15,7 @@ namespace LMS.DAL.Entity
         public string questionType { get; set; }
         public string CorrectAnswer { get; set; }
         [ForeignKey("Exam")]
-        public int Exam_ID { get; set; }
+        public int? Exam_ID { get; set; }
         public virtual Exam Exam { get; set; }
         public ICollection<StudentQuestion> StudentQuestion { get; } = new HashSet<StudentQuestion>();
         public ICollection<ChooseQuestion> ChooseQuestion { get; } = new HashSet<ChooseQuestion>();

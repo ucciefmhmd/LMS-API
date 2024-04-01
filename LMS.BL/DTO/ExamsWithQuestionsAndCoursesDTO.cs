@@ -17,7 +17,7 @@ namespace LMS.BL.DTO
         public DateOnly Date { get; set; }
         public double Max_Degree { get; set; }
         public double Min_Degree { get; set; }
-        public List<QuestionCrudDTO> AllQuestion { get; set; } = new List<QuestionCrudDTO>();
+        public ICollection<QuestionCrudDTO> AllQuestion { get; set; }
         public int Course_ID { get; set; }
         public int NumberOfQuestions { get; set; }
     }

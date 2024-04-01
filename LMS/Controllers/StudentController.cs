@@ -207,6 +207,80 @@ namespace LMS.Controllers
         }
 
 
+        [HttpPost("addCourse")]
+        public async Task<IActionResult> AddCourseToStudent([FromBody] StudentWithCourseDTO stdCourse)
+        {
+            try
+            {
+                var student = stdRep.GetById(stdCourse.studentId);
+                if (student == null)
+                    return BadRequest($"Student with ID {stdCourse.studentId} not found.");
+
+                foreach (var nameOfCourse in stdCourse.CourseName)
+
+                {
+                    var course = courseRep.GetByName(nameOfCourse);
+
+                    if (course != null)
+                    {
+                        Console.WriteLine($"Found course: {course.Name}");
+
+                        foreach (var instId in stdCourse.InstructorIDs)
+                        {
+                            var inst = instRep.GetById(instId);
+
+                            if (inst != null)
+                            {
+                                Console.WriteLine($"Found instructor: {inst.userID}");
+
+                                var instructorCourse = db.InstructorCourse
+                                    .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
+
+                                if (instructorCourse != null)
+                                {
+                                    Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
+
+                                    var group = new Group
+                                    {
+                                        Name = "any",
+                                        Chat = "",
+                                        Std_ID = student.userID,
+                                        InstructorCourse = instructorCourse,
+                                        InstCos_ID = instructorCourse.Id
+                                    };
+
+                                    student.Group.Add(group);
+                                }
+                                else
+                                {
+                                    return BadRequest($"Instructor course not found for course: {nameOfCourse} and instructor: {inst.userID}");
+                                }
+                            }
+                            else
+                            {
+                                return BadRequest($"Instructor with ID {instId} not found for course: {nameOfCourse}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest($"Invalid course name: {nameOfCourse}");
+                    }
+                }
+
+
+                stdRep.Update(student);
+                return CreatedAtAction(nameof(GetStudentById), new { id = stdCourse.studentId }, new { Message = $"Course added to student successfully." });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request: " + ex.Message);
+            }
+        }
+
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromForm] StudentCrudDTO std)

@@ -12,8 +12,9 @@ namespace LMS.BL.DTO
         public string Question { get; set; }
         public string questionType { get; set; }
         public string CorrectAnswer { get; set; }
-        public int Exam_ID { get; set; }
         public List<string> ChoosesName { get; set; } = new List<string>();
+
+
         //public string CourseName { get; set; }
 
     }

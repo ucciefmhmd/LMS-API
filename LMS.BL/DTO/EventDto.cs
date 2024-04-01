@@ -17,5 +17,6 @@ namespace LMS.BL.DTO
         public string Description { get; set; }
         public string HyperLink { get; set; }
         public List<string> CoursesName { get; set; } = new List<string>();
+        public List<int> CoursesIDs { get; set; } = new List<int>();
     }
 }

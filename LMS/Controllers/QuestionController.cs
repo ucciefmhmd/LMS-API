@@ -84,10 +84,10 @@ namespace LMS.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var examId = examRep.GetById(question.Exam_ID);
+                //var examId = examRep.GetById(question.Exam_ID);
 
-                if (examId is null)
-                    return BadRequest("Invalid Exam");
+                //if (examId is null)
+                //    return BadRequest("Invalid Exam");
 
               
                 var model = mapper.Map<Questions>(question);
@@ -121,10 +121,10 @@ namespace LMS.Controllers
                 if (existingQuestion is null)
                     return NotFound("Question Not Found");
 
-                var exam = examRep.GetById(question.Exam_ID);
+                //var exam = examRep.GetById(question.Exam_ID);
 
-                if (exam == null)
-                    return BadRequest("Invalid Exam ID");
+                //if (exam == null)
+                //    return BadRequest("Invalid Exam ID");
 
                 mapper.Map(question, existingQuestion);
 

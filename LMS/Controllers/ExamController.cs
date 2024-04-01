@@ -108,7 +108,9 @@ namespace LMS.Controllers
                 //        return BadRequest($"Invalid Question ID: {questionId}");
                 //    }
                 //}
+
                 var questions = exam.AllQuestion.Select(question => mapper.Map<Questions>(question)).ToList();
+
 
                 foreach (var question in questions)
                 {
