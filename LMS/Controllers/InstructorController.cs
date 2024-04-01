@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LMS.Controllers
 {
@@ -107,6 +108,51 @@ namespace LMS.Controllers
                 return StatusCode(404, new { error = "Not Found", message = "Instructor with provided Name not found" });
             }
         }
+
+
+        [HttpPost("addCourse")]
+        public async Task<IActionResult> AddCourseToInstructor([FromBody] InstructorWithCourseDTO instCourse)
+        {
+            try
+            {
+                var inst = instRep.GetById(instCourse.InstructorId);
+                if (inst == null)
+                    return BadRequest($"Instructor with ID {instCourse.InstructorId} not found.");
+
+                foreach (var nameOfCourse in instCourse.CourseName)
+                {
+                    var course = courseRep.GetByName(nameOfCourse);
+
+                    if (course != null)
+                    {
+                        var instructorCourse = new InstructorCourse
+                        {
+                            inst_ID = inst.userID,
+                            Course_ID = course.Id
+                        };
+
+                        inst.InstructorCourse.Add(instructorCourse);
+                    }
+                    else
+                        return BadRequest("Invalid course name: " + nameOfCourse);
+
+                }
+
+
+                instRep.Update(inst);
+                return CreatedAtAction(nameof(GetId), new { id = instCourse.InstructorId }, new { Message = $"Course added to Instructor successfully." });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request: " + ex.Message);
+            }
+        }
+
+
+
+
+
 
 
         [HttpPost]

@@ -67,6 +67,12 @@ namespace LMS.BL.Mapper
                 .ReverseMap();
 
 
+            CreateMap<Instructors, InstructorWithCourseDTO>()
+                .ForMember(dest => dest.InstructorId, opt => opt.MapFrom(src => src.InstructorCourse.Select(a=>a.inst_ID)))
+                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(a=>a.Courses.Name)))
+                .ReverseMap();
+
+
             CreateMap<Courses, CoursesDTO>().ReverseMap();
 
             CreateMap<Courses, CoursesWithNumberOfExamDTO>()
