@@ -29,25 +29,55 @@ namespace LMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ExamsWithQuestionsAndCoursesDTO>> GetAll()
+        public ActionResult<IEnumerable<GetExamDTO>> GetAll()
         {
             var exams = examRep.GetAllData();
-            var examDTO = mapper.Map<IEnumerable<ExamsWithQuestionsAndCoursesDTO>>(exams);
+            var examDTO = mapper.Map<IEnumerable<GetExamDTO>>(exams);
             return Ok(examDTO);
         }
 
+        //[HttpGet("{id:int}")]
+        //public ActionResult<GetExamDTO> GetId(int id)
+        //{
+        //    try
+        //    {
+        //        if (id <= 0)
+        //            return BadRequest(new { error = "Invalid ID", message = "ID must be a positive integer." });
+
+        //        var exam = examRep.GetById(id);
+        //        var examDto = mapper.Map<GetExamDTO>(exam);
+
+        //        foreach (var questionDto in examDto.AllQuestion)
+        //        {
+        //            var question = exam.Questions.FirstOrDefault(q => q.Id == questionDto.Id);
+        //            if (question != null)
+        //            {
+        //                questionDto.ChoosesName = question.ChooseQuestion.Select(cq => cq.Choose).ToList();
+        //            }
+        //        }
+
+        //        return Ok(examDto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { error = "Internal Server Error", message = "An error occurred while processing the request." });
+        //    }
+        //}
+
+
+
         [HttpGet("{id:int}")]
-        public ActionResult<ExamsWithQuestionsAndCoursesDTO> GetId(int id)
+        public ActionResult<GetExamDTO> GetId(int id)
         {
             try
             {
                 if (id <= 0)
                     return BadRequest(new { error = "Invalid ID", message = "ID must be a positive integer." });
 
-                var exam = examRep.GetById(id);
+                var exam = examRep.GetByIdIncludingChooseQuestions(id);
+                var examDto = mapper.Map<GetExamDTO>(exam);
 
-                var examDtos = mapper.Map<ExamsWithQuestionsAndCoursesDTO>(exam);
-                return Ok(examDtos);
+                return Ok(examDto);
             }
             catch (Exception ex)
             {
@@ -55,8 +85,12 @@ namespace LMS.Controllers
             }
         }
 
+
+
+
+
         [HttpGet("{name:alpha}")]
-        public ActionResult<ExamsWithQuestionsAndCoursesDTO> GetName(string name)
+        public ActionResult<GetExamDTO> GetName(string name)
         {
             try
             {
@@ -66,7 +100,7 @@ namespace LMS.Controllers
 
                 var exam = examRep.GetByName(name);
 
-                var examDtos = mapper.Map<ExamsWithQuestionsAndCoursesDTO>(exam);
+                var examDtos = mapper.Map<GetExamDTO>(exam);
                 return Ok(examDtos);
             }
             catch (Exception ex)
@@ -92,28 +126,14 @@ namespace LMS.Controllers
                 if (course == null)
                     return BadRequest("Invalid Course ID");
 
+
                 var model = mapper.Map<Exam>(exam);
 
-                //foreach (var questionId in exam.QuestionIDs)
-                //{
-                //    var question = quesRep.GetById(questionId);
-
-                //    if (question != null)
-                //    {
-                //        Console.WriteLine(question);
-                //        model.Questions.Add(question);
-                //    }
-                //    else
-                //    {
-                //        return BadRequest($"Invalid Question ID: {questionId}");
-                //    }
-                //}
-
-                var questions = exam.AllQuestion.Select(question => mapper.Map<Questions>(question)).ToList();
-
-
-                foreach (var question in questions)
+                foreach (var questionDto in exam.AllQuestion)
                 {
+                    var question = mapper.Map<Questions>(questionDto);
+                    question.ChooseQuestion = questionDto.ChoosesName.Select(chooseName =>
+                        new ChooseQuestion { Choose = chooseName, Ques_ID = question.Id }).ToList();
                     model.Questions.Add(question);
                 }
 

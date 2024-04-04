@@ -12,6 +12,7 @@ namespace LMS.BL.Interface
         IEnumerable<Instructors> GetAllData();
         Instructors GetById(int id);
         Instructors GetByName(string name);
+        IEnumerable<Instructors> GetInstructorNamesByCourse(int courseId);
         void Add(Instructors inst);
         void Update(Instructors inst);
         void Delete(Instructors inst);

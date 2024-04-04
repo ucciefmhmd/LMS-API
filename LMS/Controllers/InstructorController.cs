@@ -150,7 +150,25 @@ namespace LMS.Controllers
         }
 
 
+        [HttpGet("names/{id:int}")]
+        public ActionResult<IEnumerable<InstructorDataDTO>> GetInstructorsByCourse(int id)
+        {
+            try
+            {
+                var instructors = instRep.GetInstructorNamesByCourse(id);
 
+                if (instructors == null || !instructors.Any())
+                    return NotFound("No instructors found for the provided course ID.");
+
+                var instDtos = mapper.Map<IEnumerable<InstructorDataDTO>>(instructors);
+
+                return Ok(instDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
 
 
 

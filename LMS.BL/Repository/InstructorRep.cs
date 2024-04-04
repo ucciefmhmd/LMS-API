@@ -1,6 +1,7 @@
 ﻿using LMS.BL.Interface;
 using LMS.DAL.Database;
 using LMS.DAL.Entity;
+using LMS.DAL.Migrations;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,15 @@ namespace LMS.BL.Repository
         public InstructorRep(LMSContext db)
         {
             this.db = db;
+        }
+
+        public IEnumerable<Instructors> GetInstructorNamesByCourse(int courseId)
+        {
+            return db.Instructors
+                .Where(i => i.InstructorCourse.Any(ic => ic.Course_ID == courseId))
+                .Include(i => i.Users)
+                .Where(u => u.Users.Role == "instructor")
+                .ToList();
         }
 
         public void Add(Instructors inst)

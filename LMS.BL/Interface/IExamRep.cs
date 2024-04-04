@@ -11,6 +11,7 @@ namespace LMS.BL.Interface
     {
         IEnumerable<Exam> GetAllData();
         Exam GetById(int id);
+        Exam GetByIdIncludingChooseQuestions(int id);
         Exam GetByName(string name);
         void Add(Exam exam);
         void Update(Exam exam);

@@ -1,14 +1,12 @@
-﻿using LMS.DAL.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LMS.BL.DTO
 {
-    public class ExamsWithQuestionsAndCoursesDTO
+    public class GetExamDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -17,7 +15,8 @@ namespace LMS.BL.DTO
         public DateOnly Date { get; set; }
         public double Max_Degree { get; set; }
         public double Min_Degree { get; set; }
-        public List<QuestionCrudDTO> AllQuestion { get; set; }
+        public List<QuestionCrudDTO> AllQuestion { get; set; } = new List<QuestionCrudDTO>();
         public int Course_ID { get; set; }
+        public int NumberOfQuestions { get; set; }
     }
 }

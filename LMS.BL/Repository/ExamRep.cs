@@ -34,9 +34,8 @@ namespace LMS.BL.Repository
         public IEnumerable<Exam> GetAllData()
         {
             return db.Exam
-                     .Include(a => a.Questions)
-                     .Include(a => a.StudentExam)
-                        .ThenInclude(se => se.Students)
+                     .Include(e => e.Questions)
+                        .ThenInclude(q => q.ChooseQuestion)
                      .ToList();
         }
 
@@ -50,6 +49,25 @@ namespace LMS.BL.Repository
                             .ThenInclude(se => se.Students)
                          .FirstOrDefault(a => a.Id == id);
 
+                if (exam == null)
+                    throw new Exception("Exam with provided ID not found.");
+
+                return exam;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error occurred while retrieving exam by ID.", ex);
+            }
+        }
+
+        public Exam GetByIdIncludingChooseQuestions(int id)
+        {
+            try
+            {
+                var exam = db.Exam
+                .Include(e => e.Questions)
+                    .ThenInclude(q => q.ChooseQuestion)
+                .FirstOrDefault(e => e.Id == id);
                 if (exam == null)
                     throw new Exception("Exam with provided ID not found.");
 

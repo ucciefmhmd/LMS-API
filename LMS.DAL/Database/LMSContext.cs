@@ -48,7 +48,12 @@ namespace LMS.DAL.Database
               .HasOne(s => s.Users)
               .WithOne()
               .HasForeignKey<Instructors>(s => s.userID)
-              .OnDelete(DeleteBehavior.Restrict);
+              .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Exam>()
+                .HasOne(e => e.Courses)
+                .WithMany(c => c.Exam)
+                .HasForeignKey(e => e.Course_ID)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

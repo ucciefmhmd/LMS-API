@@ -206,24 +206,29 @@ namespace LMS.Controllers
             }
         }
 
-
-        [HttpPost("addCourse")]
-        public async Task<IActionResult> AddCourseToStudent([FromBody] StudentWithCourseDTO stdCourse)
+        [HttpPost("addCourse/{id:int}")]
+        //[Route("{id:int}")]
+        public async Task<IActionResult> AddCourseToStudent(int id, [FromBody] StudentWithCourseDTO stdCourse)
         {
             try
             {
-                var student = stdRep.GetById(stdCourse.studentId);
+                var student = stdRep.GetById(id);
                 if (student == null)
-                    return BadRequest($"Student with ID {stdCourse.studentId} not found.");
+                    return BadRequest($"Student with ID {id} not found.");
 
                 foreach (var nameOfCourse in stdCourse.CourseName)
-
                 {
                     var course = courseRep.GetByName(nameOfCourse);
 
                     if (course != null)
                     {
                         Console.WriteLine($"Found course: {course.Name}");
+
+                        
+                        if (student.Group.Any(g => g.InstructorCourse.Course_ID == course.Id))
+                        {
+                            return BadRequest($"Student already has the course: {nameOfCourse}");
+                        }
 
                         foreach (var instId in stdCourse.InstructorIDs)
                         {
@@ -268,11 +273,9 @@ namespace LMS.Controllers
                     }
                 }
 
-
                 stdRep.Update(student);
-                return CreatedAtAction(nameof(GetStudentById), new { id = stdCourse.studentId }, new { Message = $"Course added to student successfully." });
+                return CreatedAtAction(nameof(GetStudentById), new { Id = id }, new { Message = $"Course(s) added to student successfully." });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request: " + ex.Message);
