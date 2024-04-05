@@ -142,57 +142,57 @@ namespace LMS.Controllers
                 var data = mapper.Map<Students>(std);
                 data.Users.Role = "student";
 
-                foreach (var nameOfCourse in std.CourseName)
+                //foreach (var nameOfCourse in std.CourseName)
 
-                {
-                    var course = courseRep.GetByName(nameOfCourse);
+                //{
+                //    var course = courseRep.GetByName(nameOfCourse);
 
-                    if (course != null)
-                    {
-                        Console.WriteLine($"Found course: {course.Name}");
+                //    if (course != null)
+                //    {
+                //        Console.WriteLine($"Found course: {course.Name}");
 
-                        foreach (var instId in std.InstructorIDs)
-                        {
-                            var inst = instRep.GetById(instId);
+                //        foreach (var instId in std.InstructorIDs)
+                //        {
+                //            var inst = instRep.GetById(instId);
 
-                            if (inst != null)
-                            {
-                                Console.WriteLine($"Found instructor: {inst.userID}");
+                //            if (inst != null)
+                //            {
+                //                Console.WriteLine($"Found instructor: {inst.userID}");
 
-                                var instructorCourse = db.InstructorCourse
-                                    .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
+                //                var instructorCourse = db.InstructorCourse
+                //                    .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
 
-                                if (instructorCourse != null)
-                                {
-                                    Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
+                //                if (instructorCourse != null)
+                //                {
+                //                    Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
 
-                                    var group = new Group
-                                    {
-                                        Name = "any",
-                                        Chat = "",
-                                        Std_ID = data.userID,
-                                        InstructorCourse = instructorCourse,
-                                        InstCos_ID = instructorCourse.Id
-                                    };
+                //                    var group = new Group
+                //                    {
+                //                        Name = "any",
+                //                        Chat = "",
+                //                        Std_ID = data.userID,
+                //                        InstructorCourse = instructorCourse,
+                //                        InstCos_ID = instructorCourse.Id
+                //                    };
 
-                                    data.Group.Add(group);
-                                }
-                                else
-                                {
-                                    return BadRequest($"Instructor course not found for course: {nameOfCourse} and instructor: {inst.userID}");
-                                }
-                            }
-                            else
-                            {
-                                return BadRequest($"Instructor with ID {instId} not found for course: {nameOfCourse}");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return BadRequest($"Invalid course name: {nameOfCourse}");
-                    }
-                }
+                //                    data.Group.Add(group);
+                //                }
+                //                else
+                //                {
+                //                    return BadRequest($"Instructor course not found for course: {nameOfCourse} and instructor: {inst.userID}");
+                //                }
+                //            }
+                //            else
+                //            {
+                //                return BadRequest($"Instructor with ID {instId} not found for course: {nameOfCourse}");
+                //            }
+                //        }
+                //    }
+                //    else
+                //    {
+                //        return BadRequest($"Invalid course name: {nameOfCourse}");
+                //    }
+                //}
 
                 Random rnd = new Random();
                 var path = $"Images\\Students\\Student{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
@@ -337,56 +337,56 @@ namespace LMS.Controllers
 
                 existingStudent.Group.Clear();
 
-                foreach (var nameOfCourse in std.CourseName)
-                {
-                    var course = courseRep.GetByName(nameOfCourse);
+                //foreach (var nameOfCourse in std.CourseName)
+                //{
+                //    var course = courseRep.GetByName(nameOfCourse);
 
-                    if (course != null)
-                    {
-                        Console.WriteLine($"Found course: {course.Name}");
+                //    if (course != null)
+                //    {
+                //        Console.WriteLine($"Found course: {course.Name}");
 
-                        foreach (var instId in std.InstructorIDs)
-                        {
-                            var inst = instRep.GetById(instId);
+                //        foreach (var instId in std.InstructorIDs)
+                //        {
+                //            var inst = instRep.GetById(instId);
 
-                            if (inst != null)
-                            {
-                                Console.WriteLine($"Found instructor: {inst.userID}");
+                //            if (inst != null)
+                //            {
+                //                Console.WriteLine($"Found instructor: {inst.userID}");
 
-                                var instructorCourse = db.InstructorCourse
-                                    .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
+                //                var instructorCourse = db.InstructorCourse
+                //                    .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
 
-                                if (instructorCourse != null)
-                                {
-                                    Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
+                //                if (instructorCourse != null)
+                //                {
+                //                    Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
 
-                                    var group = new Group
-                                    {
-                                        Name = "any",
-                                        Chat = "",
-                                        Std_ID = existingStudent.userID,
-                                        InstructorCourse = instructorCourse,
-                                        InstCos_ID = instructorCourse.Id
-                                    };
+                //                    var group = new Group
+                //                    {
+                //                        Name = "any",
+                //                        Chat = "",
+                //                        Std_ID = existingStudent.userID,
+                //                        InstructorCourse = instructorCourse,
+                //                        InstCos_ID = instructorCourse.Id
+                //                    };
 
-                                    existingStudent.Group.Add(group);
-                                }
-                                else
-                                {
-                                    return BadRequest($"Instructor course not found for course: {nameOfCourse} and instructor: {inst.userID}");
-                                }
-                            }
-                            else
-                            {
-                                return BadRequest($"Instructor with ID {instId} not found for course: {nameOfCourse}");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return BadRequest($"Invalid course name: {nameOfCourse}");
-                    }
-                }
+                //                    existingStudent.Group.Add(group);
+                //                }
+                //                else
+                //                {
+                //                    return BadRequest($"Instructor course not found for course: {nameOfCourse} and instructor: {inst.userID}");
+                //                }
+                //            }
+                //            else
+                //            {
+                //                return BadRequest($"Instructor with ID {instId} not found for course: {nameOfCourse}");
+                //            }
+                //        }
+                //    }
+                //    else
+                //    {
+                //        return BadRequest($"Invalid course name: {nameOfCourse}");
+                //    }
+                //}
 
                 if (std.ImageFile != null)
                 {

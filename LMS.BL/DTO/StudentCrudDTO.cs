@@ -20,8 +20,8 @@ namespace LMS.BL.DTO
         public string Password { get; set; }
         public string? UserAttachmentPath { get; set; }
         public IFormFile ImageFile { get; set; }
-        public List<string> CourseName { get; set; } = new List<string>();
-        public List<int> InstructorIDs { get; set; } = new List<int>();
+        //public List<string> CourseName { get; set; } = new List<string>();
+        //public List<int> InstructorIDs { get; set; } = new List<int>();
 
     }
 }

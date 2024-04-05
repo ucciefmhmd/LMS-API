@@ -71,8 +71,8 @@ namespace LMS.BL.Mapper
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
-                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Name).Distinct()))
-                .ForMember(dest => dest.InstructorIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID).Distinct()))
+                //.ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Name).Distinct()))
+                //.ForMember(dest => dest.InstructorIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID).Distinct()))
                 .ReverseMap();
 
             CreateMap<Students, StudentExamResultsDTO>()
