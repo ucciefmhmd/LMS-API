@@ -25,5 +25,6 @@ namespace LMS.BL.DTO
         public IFormFile ImageFile { get; set; }
         public string Specialization { get; set; }
         public List<string> CourseName { get; set; } = new List<string>();
+        public List<int> CourseIDs { get; set; } = new List<int>();
     }
 }

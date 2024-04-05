@@ -24,13 +24,20 @@ namespace LMS.BL.Mapper
              .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
              .ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialization))
              .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Name).Distinct()))
+             .ForMember(dest => dest.CourseIDs, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Id).Distinct()))
              .ReverseMap();
 
             CreateMap<Instructors, InstructorDataDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.userID))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Users.Name))
-                .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.InstructorCourse.FirstOrDefault().Course_ID))
                 .ReverseMap();
+
+            CreateMap<Instructors, InstructorWithCourseDTO>()
+                .ForMember(dest => dest.InstructorId, opt => opt.MapFrom(src => src.InstructorCourse.Select(a => a.inst_ID)))
+                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(a => a.Courses.Name)))
+                .ForMember(dest => dest.CourseIDs, opt => opt.MapFrom(src => src.InstructorCourse.Select(a => a.Courses.Id)))
+                .ReverseMap();
+
 
 
             CreateMap<Students, StudentWithExamAndInstrcutorCourses>()
@@ -81,12 +88,6 @@ namespace LMS.BL.Mapper
                 //.ForMember(dest => dest.InstructorIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID).Distinct()))
                 .ForMember(dest => dest.InstructorId, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID)))
                 .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Courses.Id)))
-                .ReverseMap();
-
-
-            CreateMap<Instructors, InstructorWithCourseDTO>()
-                .ForMember(dest => dest.InstructorId, opt => opt.MapFrom(src => src.InstructorCourse.Select(a=>a.inst_ID)))
-                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(a=>a.Courses.Name)))
                 .ReverseMap();
 
 

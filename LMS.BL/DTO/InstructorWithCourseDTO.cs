@@ -10,5 +10,6 @@ namespace LMS.BL.DTO
     {
         public int InstructorId { get; set; }
         public List<string> CourseName { get; set; } = new List<string>();
+        public List<int> CourseIDs { get; set; } = new List<int>();
     }
 }

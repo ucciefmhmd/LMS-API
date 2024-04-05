@@ -119,9 +119,9 @@ namespace LMS.Controllers
                 if (inst == null)
                     return BadRequest($"Instructor with ID {instCourse.InstructorId} not found.");
 
-                foreach (var nameOfCourse in instCourse.CourseName)
+                foreach (var idOfCourse in instCourse.CourseIDs)
                 {
-                    var course = courseRep.GetByName(nameOfCourse);
+                    var course = courseRep.GetById(idOfCourse);
 
                     if (course != null)
                     {
@@ -134,7 +134,7 @@ namespace LMS.Controllers
                         inst.InstructorCourse.Add(instructorCourse);
                     }
                     else
-                        return BadRequest("Invalid course name: " + nameOfCourse);
+                        return BadRequest("Invalid course id: " + idOfCourse);
 
                 }
 
@@ -188,9 +188,9 @@ namespace LMS.Controllers
                 data.Users.Role = "instructor";
                 
 
-                foreach (var nameOfCourse in inst.CourseName)
+                foreach (var idOfCourse in inst.CourseIDs)
                 {
-                    var course = courseRep.GetByName(nameOfCourse);
+                    var course = courseRep.GetById(idOfCourse);
 
                     if (course != null)
                     {
@@ -203,7 +203,7 @@ namespace LMS.Controllers
                         data.InstructorCourse.Add(instructorCourse);
                     }
                     else
-                        return BadRequest("Invalid course name: " + nameOfCourse);
+                        return BadRequest("Invalid course id: " + idOfCourse);
                     
                 }
 
@@ -247,9 +247,9 @@ namespace LMS.Controllers
                 
                 existingInstructor.InstructorCourse.Clear();
 
-                foreach (var courseName in inst.CourseName)
+                foreach (var courseID in inst.CourseIDs)
                 {
-                    var course = courseRep.GetByName(courseName);
+                    var course = courseRep.GetById(courseID);
 
                     if (course != null)
                     {
@@ -262,7 +262,7 @@ namespace LMS.Controllers
                         existingInstructor.InstructorCourse.Add(instructorCourse);
                     }
                     else
-                        return BadRequest("Invalid course name: " + courseName);
+                        return BadRequest("Invalid course Id: " + courseID);
                     
                 }
 
