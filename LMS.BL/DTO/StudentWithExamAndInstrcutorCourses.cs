@@ -27,6 +27,7 @@ namespace LMS.BL.DTO
         public List<string> ExamName { get; set; } = new List<string>();
         public List<int> ExamIDs { get; set; } = new List<int>();
         public List<int> Results { get; set; } = new List<int>();
+        public List<int> InstructorIDs { get; set; } = new List<int>();
 
 
 

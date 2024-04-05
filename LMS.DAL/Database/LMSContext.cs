@@ -26,6 +26,7 @@ namespace LMS.DAL.Database
         public DbSet<UserEvent> UserEvent { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<ChooseQuestion> ChooseQuestion { get; set; }
+        public DbSet<EventsCourses> EventsCourses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

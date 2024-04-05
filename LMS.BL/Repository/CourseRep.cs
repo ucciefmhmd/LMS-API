@@ -28,6 +28,17 @@ namespace LMS.BL.Repository
 
         public void Delete(Courses crs)
         {
+            var relatedQuestions = db.Questions.Where(q => q.Exam.Course_ID == crs.Id);
+            db.Questions.RemoveRange(relatedQuestions);
+
+            var relatedEventIds = db.EventsCourses.Where(ec => ec.Course_ID == crs.Id)
+                                         .Select(ec => ec.Event_ID)
+                                         .ToList();
+
+            var relatedEvents = db.Events.Where(e => relatedEventIds.Contains(e.Id));
+            db.Events.RemoveRange(relatedEvents);
+            
+
             db.Courses.Remove(crs);
             db.SaveChanges();
         }

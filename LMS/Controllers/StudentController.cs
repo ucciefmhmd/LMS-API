@@ -23,9 +23,11 @@ namespace LMS.Controllers
         private readonly IUserRep userRep;
         private readonly ICourseRep courseRep;
         private readonly IInstructorRep instRep;
+        private readonly IExamRep examRep;
+
         public string ServerRootPath { get { return $"{Request.Scheme}://{Request.Host}{Request.PathBase}"; } }
 
-        public StudentController(LMSContext db, IUploadFile uploadFile ,IStudentRep stdRep, IMapper mapper, IUserRep userRep, ICourseRep courseRep, IInstructorRep instRep)
+        public StudentController(LMSContext db, IUploadFile uploadFile, IStudentRep stdRep, IMapper mapper, IUserRep userRep, ICourseRep courseRep, IInstructorRep instRep, IExamRep examRep)
         {
             this.db = db;
             this.uploadFile = uploadFile;
@@ -34,6 +36,7 @@ namespace LMS.Controllers
             this.userRep = userRep;
             this.courseRep = courseRep;
             this.instRep = instRep;
+            this.examRep = examRep;
         }
 
         [HttpGet]
@@ -74,17 +77,17 @@ namespace LMS.Controllers
 
                 var studentDtos = mapper.Map<StudentWithExamAndInstrcutorCourses>(student);
 
-                    if (studentDtos.UserAttachmentPath != null)
+                if (studentDtos.UserAttachmentPath != null)
+                {
+                    if (studentDtos.UserAttachmentPath.StartsWith("\\"))
                     {
-                        if (studentDtos.UserAttachmentPath.StartsWith("\\"))
+                        if (!string.IsNullOrEmpty(studentDtos.UserAttachmentPath))
                         {
-                            if (!string.IsNullOrEmpty(studentDtos.UserAttachmentPath))
-                            {
                             studentDtos.UserAttachmentPath = ServerRootPath + studentDtos.UserAttachmentPath.Replace('\\', '/');
-                            }
                         }
                     }
-                
+                }
+
                 return Ok(studentDtos);
             }
             catch (Exception ex)
@@ -169,7 +172,7 @@ namespace LMS.Controllers
                                         Chat = "",
                                         Std_ID = data.userID,
                                         InstructorCourse = instructorCourse,
-                                        InstCos_ID = instructorCourse.Id 
+                                        InstCos_ID = instructorCourse.Id
                                     };
 
                                     data.Group.Add(group);
@@ -206,8 +209,9 @@ namespace LMS.Controllers
             }
         }
 
+        
+        
         [HttpPost("addCourse/{id:int}")]
-        //[Route("{id:int}")]
         public async Task<IActionResult> AddCourseToStudent(int id, [FromBody] StudentWithCourseDTO stdCourse)
         {
             try
@@ -216,65 +220,61 @@ namespace LMS.Controllers
                 if (student == null)
                     return BadRequest($"Student with ID {id} not found.");
 
-                foreach (var nameOfCourse in stdCourse.CourseName)
+                var course = courseRep.GetById(stdCourse.CourseId);
+
+                if (course != null)
                 {
-                    var course = courseRep.GetByName(nameOfCourse);
+                    Console.WriteLine($"Found course: {course.Name}");
 
-                    if (course != null)
+
+                    if (student.Group.Any(g => g.InstructorCourse.Course_ID == course.Id))
                     {
-                        Console.WriteLine($"Found course: {course.Name}");
+                        return BadRequest($"Student already has the course: {course.Name}");
+                    }
 
-                        
-                        if (student.Group.Any(g => g.InstructorCourse.Course_ID == course.Id))
+                    var inst = instRep.GetById(stdCourse.InstructorId);
+
+                    if (inst != null)
+                    {
+                        Console.WriteLine($"Found instructor: {inst.userID}");
+
+                        var instructorCourse = db.InstructorCourse
+                            .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
+
+                        if (instructorCourse != null)
                         {
-                            return BadRequest($"Student already has the course: {nameOfCourse}");
+                            //Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
+
+                            var group = new Group
+                            {
+                                Name = "any",
+                                Chat = "",
+                                Std_ID = student.userID,
+                                InstructorCourse = instructorCourse,
+                                InstCos_ID = instructorCourse.Id
+                            };
+
+                            student.Group.Add(group);
                         }
-
-                        foreach (var instId in stdCourse.InstructorIDs)
+                        else
                         {
-                            var inst = instRep.GetById(instId);
-
-                            if (inst != null)
-                            {
-                                Console.WriteLine($"Found instructor: {inst.userID}");
-
-                                var instructorCourse = db.InstructorCourse
-                                    .FirstOrDefault(ic => ic.Course_ID == course.Id && ic.inst_ID == inst.userID);
-
-                                if (instructorCourse != null)
-                                {
-                                    Console.WriteLine($"Found instructor course: {instructorCourse.Id}");
-
-                                    var group = new Group
-                                    {
-                                        Name = "any",
-                                        Chat = "",
-                                        Std_ID = student.userID,
-                                        InstructorCourse = instructorCourse,
-                                        InstCos_ID = instructorCourse.Id
-                                    };
-
-                                    student.Group.Add(group);
-                                }
-                                else
-                                {
-                                    return BadRequest($"Instructor course not found for course: {nameOfCourse} and instructor: {inst.userID}");
-                                }
-                            }
-                            else
-                            {
-                                return BadRequest($"Instructor with ID {instId} not found for course: {nameOfCourse}");
-                            }
+                            return BadRequest($"Instructor course not found for course: {course} and instructor: {inst.userID}");
                         }
                     }
                     else
                     {
-                        return BadRequest($"Invalid course name: {nameOfCourse}");
+                        return BadRequest($"Instructor with ID {inst.userID} not found for course: {course}");
                     }
+
+                }
+                else
+                {
+                    return BadRequest($"Invalid course name: {course}");
                 }
 
+
                 stdRep.Update(student);
-                return CreatedAtAction(nameof(GetStudentById), new { Id = id }, new { Message = $"Course(s) added to student successfully." });
+                return CreatedAtAction(nameof(GetStudentById), new { Id = id }, new { Message = $"Course({course}) added to student successfully." });
             }
             catch (Exception ex)
             {
@@ -282,6 +282,40 @@ namespace LMS.Controllers
             }
         }
 
+
+        [HttpPost("addResult")]
+        public async Task<IActionResult> AddExamResult([FromBody] StudentExamResultsDTO examResult)
+        {
+            try
+            {
+                var student = stdRep.GetById(examResult.StudentID);
+                if (student == null)
+                    return BadRequest($"Student with ID {examResult.StudentID} not found.");
+
+                var exam = examRep.GetById(examResult.ExamID);
+                if (exam == null)
+                    return BadRequest($"Exam with ID {examResult.ExamID} not found.");
+
+                if (examResult.Result < 0 || examResult.Result > 100)
+                    return BadRequest("Invalid result. Result must be between 0 and 100.");
+
+                var resultEntity = new StudentExam
+                {
+                    Std_ID = examResult.StudentID,
+                    Exam_ID = examResult.ExamID,
+                    Result = examResult.Result
+                };
+                student.StudentExam.Add(resultEntity);
+
+                stdRep.Update(student);
+
+                return Ok("Exam result added successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request: " + ex.Message);
+            }
+        }
 
 
 
