@@ -245,7 +245,7 @@ namespace LMS.Controllers
                 existingInstructor.Users.Role = "instructor";
 
                 
-                existingInstructor.InstructorCourse.Clear();
+                //existingInstructor.InstructorCourse.Clear();
 
                 foreach (var courseID in inst.CourseIDs)
                 {

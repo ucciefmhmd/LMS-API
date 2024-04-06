@@ -27,6 +27,9 @@ namespace LMS.BL.Repository
 
         public void Delete(Exam exam)
         {
+            var relatedQuestions = db.Questions.Where(q => q.Exam_ID == exam.Id);
+            db.Questions.RemoveRange(relatedQuestions);
+
             db.Exam.Remove(exam);
             db.SaveChanges();
         }

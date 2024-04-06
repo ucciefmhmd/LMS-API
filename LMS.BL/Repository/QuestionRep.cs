@@ -28,6 +28,9 @@ namespace LMS.BL.Repository
 
         public void Delete(Questions ques)
         {
+            var relatedChooses = db.ChooseQuestion.Where(q => q.Ques_ID == ques.Id);
+            db.ChooseQuestion.RemoveRange(relatedChooses);
+
             db.Questions.Remove(ques);
             db.SaveChanges();
         }

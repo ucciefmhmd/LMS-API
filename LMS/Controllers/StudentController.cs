@@ -335,7 +335,7 @@ namespace LMS.Controllers
                 mapper.Map(std, existingStudent);
                 existingStudent.Users.Role = "student";
 
-                existingStudent.Group.Clear();
+                //existingStudent.Group.Clear();
 
                 //foreach (var nameOfCourse in std.CourseName)
                 //{
