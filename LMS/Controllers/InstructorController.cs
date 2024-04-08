@@ -226,7 +226,7 @@ namespace LMS.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] InstructorsWithCourseNameDTO inst)
+        public async Task<IActionResult> Update(int id, [FromBody] InstructorEditDTO inst)
         {
             try
             {
@@ -267,18 +267,45 @@ namespace LMS.Controllers
                 }
 
 
-                if (inst.ImageFile != null)
-                {
-                    Random rnd = new Random();
-                    var path = $"Images\\Instructors\\Instructor{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
-                    var attachmentPath = await uploadFile.UploadFileServices(inst.ImageFile, path);
-                    existingInstructor.Users.UserAttachmentPath = attachmentPath;
-                }
+                //if (inst.ImageFile != null)
+                //{
+                //    Random rnd = new Random();
+                //    var path = $"Images\\Instructors\\Instructor{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                //    var attachmentPath = await uploadFile.UploadFileServices(inst.ImageFile, path);
+                //    existingInstructor.Users.UserAttachmentPath = attachmentPath;
+                //}
 
                 existingInstructor.userID = id;
                 instRep.Update(existingInstructor);
 
                 return Ok(new { Message = "Instructor updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPut("{id}/photo")]
+        public async Task<IActionResult> UpdatePhoto([FromRoute] int id, [FromForm] InstructorPhotoUpdateDTO photoDTO)
+        {
+            try
+            {
+                var existingInstrcutor = instRep.GetById(id);
+
+                if (existingInstrcutor == null)
+                    return NotFound("Instrcutor not found.");
+
+                if (photoDTO.ImageFile != null)
+                {
+                    Random rnd = new Random();
+                    var path = $"Images\\Instructors\\Instructor{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                    var attachmentPath = await uploadFile.UploadFileServices(photoDTO.ImageFile, path);
+                    existingInstrcutor.Users.UserAttachmentPath = attachmentPath;
+                    instRep.Update(existingInstrcutor);
+                }
+
+                return Ok(new { Message = "Instructor photo updated successfully." });
             }
             catch (Exception ex)
             {

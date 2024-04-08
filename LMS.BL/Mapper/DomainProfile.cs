@@ -27,6 +27,24 @@ namespace LMS.BL.Mapper
              .ForMember(dest => dest.CourseIDs, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Id).Distinct()))
              .ReverseMap();
 
+            CreateMap<Instructors, InstructorEditDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.userID))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Users.Name))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Users.Email))
+            .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Users.Password))
+            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Users.Phone))
+            .ForMember(dest => dest.SSN, opt => opt.MapFrom(src => src.Users.SSN))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Users.Address))
+            .ForMember(dest => dest.Specialization, opt => opt.MapFrom(src => src.Specialization))
+            .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Name).Distinct()))
+            .ForMember(dest => dest.CourseIDs, opt => opt.MapFrom(src => src.InstructorCourse.Select(ic => ic.Courses.Id).Distinct()))
+            .ReverseMap();
+
+            CreateMap<Students, InstructorPhotoUpdateDTO>()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.userID))
+               .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
+               .ReverseMap();
+
             CreateMap<Instructors, InstructorDataDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.userID))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Users.Name))
@@ -75,6 +93,25 @@ namespace LMS.BL.Mapper
                 //.ForMember(dest => dest.InstructorIDs, opt => opt.MapFrom(src => src.Group.Select(g => g.InstructorCourse.Instructors.userID).Distinct()))
                 .ReverseMap();
 
+            CreateMap<Students, StudentEditDTO>()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.userID))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Users.Name))
+               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Users.Email))
+               .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Users.Password))
+               .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Users.Phone))
+               .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Users.Address))
+               .ForMember(dest => dest.SSN, opt => opt.MapFrom(src => src.Users.SSN))
+               .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+               .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+               .ReverseMap();
+
+            CreateMap<Students, StudentPhotoUpdateDTO>()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.userID))
+               .ForMember(dest => dest.UserAttachmentPath, opt => opt.MapFrom(src => src.Users.UserAttachmentPath))
+               .ReverseMap();
+
+
+
             CreateMap<Students, StudentExamResultsDTO>()
               .ForMember(dest => dest.StudentID, opt => opt.MapFrom(src => src.userID))
               .ForMember(dest => dest.ExamID, opt => opt.MapFrom(src => src.StudentExam.Select(a=>a.Exam_ID)))
@@ -92,6 +129,8 @@ namespace LMS.BL.Mapper
 
 
             CreateMap<Courses, CoursesDTO>().ReverseMap();
+            CreateMap<Courses, CourseEditDTO>().ReverseMap();
+            CreateMap<Courses, CoursePhotoUpdateDTO>().ReverseMap();
 
             CreateMap<Courses, CoursesWithNumberOfExamDTO>()
                 .ForMember(dest => dest.numOfExam, opt => opt.MapFrom(src => src.Exam.Count()));

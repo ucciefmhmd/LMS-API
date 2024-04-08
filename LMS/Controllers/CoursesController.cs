@@ -127,7 +127,7 @@ namespace LMS.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> updateCourse(int id,[FromForm] CoursesDTO courseDto)
+        public async Task<ActionResult> updateCourse(int id,[FromBody] CourseEditDTO courseDto)
         {
             try {
                 //if (courseDto is null || id != courseDto.Id)
@@ -141,18 +141,45 @@ namespace LMS.Controllers
 
                 mapper.Map(courseDto, existingCourse);
 
-                if (courseDto.ImageFile != null)
-                {
-                    Random rnd = new Random();
-                    var path = $"Images\\Students\\Student{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
-                    var attachmentPath = await uploadFile.UploadFileServices(courseDto.ImageFile, path);
-                    existingCourse.UserAttachmentPath = attachmentPath;
-                }
+                //if (courseDto.ImageFile != null)
+                //{
+                //    Random rnd = new Random();
+                //    var path = $"Images\\Students\\Student{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                //    var attachmentPath = await uploadFile.UploadFileServices(courseDto.ImageFile, path);
+                //    existingCourse.UserAttachmentPath = attachmentPath;
+                //}
 
                 existingCourse.Id = id;
                 courseRep.Update(existingCourse);
 
                 return Ok(new { Message = "Course Updated Successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPut("{id}/photo")]
+        public async Task<IActionResult> UpdatePhoto([FromRoute] int id, [FromForm] CoursePhotoUpdateDTO photoDTO)
+        {
+            try
+            {
+                var existingCourse = courseRep.GetById(id);
+
+                if (existingCourse == null)
+                    return NotFound("Course not found.");
+
+                if (photoDTO.ImageFile != null)
+                {
+                    Random rnd = new Random();
+                    var path = $"Images\\Courses\\Course{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Second}_{rnd.Next(9000)}";
+                    var attachmentPath = await uploadFile.UploadFileServices(photoDTO.ImageFile, path);
+                    existingCourse.UserAttachmentPath = attachmentPath;
+                    courseRep.Update(existingCourse);
+                }
+
+                return Ok(new { Message = "Course photo updated successfully." });
             }
             catch (Exception ex)
             {
