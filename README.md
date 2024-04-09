@@ -1,4 +1,4 @@
-LMS API
+#LMS API
 Overview
 The LMS API is a RESTful web service designed to facilitate the management of a Learning Management System (LMS). It provides endpoints for user authentication, authorization using JWT bearer tokens, and CRUD operations for managing various entities within the LMS such as users (admin, subadmin, student, instructor), subjects (courses, exams, events), etc.
 
